@@ -89,6 +89,24 @@
       overflow: hidden;
       box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
     }
+    .forecast {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .forecast-day {
+      background: #ffffff20;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 10px;
+      width: 120px;
+      text-align: center;
+    }
+    .forecast-day img {
+      width: 50px;
+      height: 50px;
+    }
   </style>
 </head>
 <body>
@@ -177,7 +195,7 @@
     } else {
       marker = L.marker([lat, lon]).addTo(map);
     }
-
+    //current weather
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
       .then(response => response.json())
       .then(weatherData => {
@@ -189,6 +207,46 @@
       .catch(err => {
         console.error("Weather API error", err);
         alert("Failed to fetch weather info.");
+      });
+    
+    // Forecast
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+      .then(response => response.json())
+      .then(forecastData => {
+        const forecastMap = new Map();
+        forecastData.list.forEach(item => {
+          const date = item.dt_txt.split(' ')[0];
+          if (!forecastMap.has(date)) {
+            forecastMap.set(date, item);
+          }
+        });
+
+        const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
+
+        if (dailyForecast.length > 0) {
+          const forecastHTML = dailyForecast.map(item => {
+            const date = new Date(item.dt * 1000).toLocaleDateString();
+            const temp = item.main.temp;
+            const condition = item.weather[0].description;
+            const icon = item.weather[0].icon;
+            return `
+              <div class="forecast-day">
+                <p>${date}</p>
+                <p>${temp}°C</p>
+                <p>${condition}</p>
+                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
+              </div>
+            `;
+          }).join('');
+
+          document.getElementById("forecast").innerHTML = forecastHTML;
+        } else {
+          document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
+        }
+      })
+      .catch(err => {
+        console.error("Forecast API error", err);
+        alert("Failed to fetch forecast data.");
       });
   }
 
