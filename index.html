@@ -257,6 +257,7 @@
       alert("Location access requires HTTPS or localhost.");
       return;
     }
+    document.getElementById("weather-info").innerText = "Detecting location and fetching weather...";
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -268,6 +269,7 @@
             .then(response => response.json())
             .then(data => {
               const city = data.address.city || data.address.town || data.address.village || "Your Location";
+              document.getElementById("cityInput").value = city; 
               showWeatherByCoords(lat, lon, city);
             })
             .catch(() => {
