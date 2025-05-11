@@ -156,12 +156,17 @@
   }
 
   function showWeather(city) {
+    console.log("Fetching weather for:", city); // Log city name
+
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
       .then(response => response.json())
       .then(data => {
         if (data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lon = parseFloat(data[0].lon);
+
+          console.log("API URL:", `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`); // Log API URL
+
           map.setView([lat, lon], 10);
           if (marker) {
             marker.setLatLng([lat, lon]);
@@ -192,6 +197,8 @@
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
       .then(response => response.json())
       .then(weatherData => {
+        console.log("API Response:", weatherData); // Log API response
+
         const temp = weatherData.main.temp;
         const condition = weatherData.weather[0].description;
         document.getElementById("weather-info").innerText =
@@ -206,6 +213,8 @@
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
       .then(response => response.json())
       .then(forecastData => {
+        console.log("Forecast API Response:", forecastData); // Log forecast API response
+
         const forecastMap = new Map();
         forecastData.list.forEach(item => {
           const date = item.dt_txt.split(' ')[0];
