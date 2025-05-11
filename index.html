@@ -168,18 +168,8 @@
           } else {
             marker = L.marker([lat, lon]).addTo(map);
           }
-          fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-            .then(response => response.json())
-            .then(weatherData => {
-              const temp = weatherData.main.temp;
-              const condition = weatherData.weather[0].description;
-              document.getElementById("weather-info").innerText =
-                `Weather in ${city}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
-            })
-            .catch(err => {
-              console.error("Weather API error", err);
-              alert("Failed to fetch weather info.");
-            });
+          // Call the showWeatherByCoords function to display weather and forecast
+          showWeatherByCoords(lat, lon, city);
         } else {
           alert("City not found.");
         }
@@ -197,7 +187,8 @@
     } else {
       marker = L.marker([lat, lon]).addTo(map);
     }
-    //current weather
+
+    // Current weather
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
       .then(response => response.json())
       .then(weatherData => {
@@ -210,7 +201,7 @@
         console.error("Weather API error", err);
         alert("Failed to fetch weather info.");
       });
-    
+
     // Forecast
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
       .then(response => response.json())
@@ -269,7 +260,7 @@
             .then(response => response.json())
             .then(data => {
               const city = data.address.city || data.address.town || data.address.village || "Your Location";
-              document.getElementById("cityInput").value = city; 
+              document.getElementById("cityInput").value = city;
               showWeatherByCoords(lat, lon, city);
             })
             .catch(() => {
@@ -311,8 +302,6 @@
   setInterval(updateDateTime, 1000);
   updateDateTime();
 
-  // Optional: Auto detect on load
-  // window.onload = detectLocation;
 </script>
 </body>
 </html>
