@@ -5,119 +5,149 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Weather Assistant</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow-x: hidden;
-      background: linear-gradient(135deg, #74ebd5, #acb6e5);
-    }
+ <style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow-x: hidden;
+    background: #ffffff;
+  }
 
-    .header {
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-      font-size: 28px;
-      padding: 20px;
-      text-align: center;
-    }
+  .header {
+    background: rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(10px);
+    color: #111;
+    font-size: 28px;
+    font-weight: bold;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
 
-    .container {
-      margin: 20px auto;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(16px);
-      border-radius: 20px;
-      padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      color: #fff;
-      box-sizing: border-box;
-    }
+  .container {
+    margin: 30px auto;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 25px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    color: #000;
+  }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      margin-bottom: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      box-sizing: border-box;
-    }
+  input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    border-radius: 15px;
+    border: none;
+    margin-bottom: 20px;
+    background: rgba(240, 240, 240, 0.9);
+    color: #000;
+    font-size: 16px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  }
 
-    .button-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+  input[type="text"]::placeholder {
+    color: #555;
+  }
 
-    button {
-      flex: 1;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      background: #4fc3f7;
-      color: white;
-      cursor: pointer;
-    }
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-    #friendWeatherInfo {
-      background: #fff;
-      color: #000;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-      margin-bottom: 15px;
-    }
+  button {
+    flex: 1;
+    padding: 14px;
+    border-radius: 15px;
+    border: none;
+    background: #5e00d6;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    font-size: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    min-width: 100px;
+  }
 
-    #friendWeatherInfo img {
-      width: 80px;
-      height: 80px;
-    }
+  button:hover {
+    background: #4a00ad;
+    transform: translateY(-2px);
+  }
 
-    #map {
-      height: 250px;
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-
-    .forecast {
-      display: flex;
-      gap: 15px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
-
-    .forecast-day {
-      flex: 0 0 150px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .forecast-day img {
-      width: 60px;
-      height: 60px;
-    }
-    #description {
+  #friendWeatherInfo {
     font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(245, 245, 245, 0.8);
     border-radius: 20px;
-    padding: 8px 16px;
-    display: inline-block;
-    margin-top: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    text-transform: capitalize;
-    font-style:capitalize;
-    }
+    padding: 20px;
+    margin-bottom: 20px;
+    color: #000;
+    text-align: center;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
 
-  </style>
+  #friendWeatherInfo h2 {
+    font-weight: bold;
+    color: #222;
+  }
+
+  #temperature {
+    font-size: 36px;
+    font-weight: bold;
+    color: #111;
+  }
+
+  #description {
+    font-size: 18px;
+    color: #333;
+  }
+
+  #map {
+    height: 250px;
+    width: 100%;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .forecast {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .forecast-day {
+    flex: 0 0 150px;
+    background: rgba(240, 240, 240, 0.9);
+    border-radius: 20px;
+    padding: 12px;
+    text-align: center;
+    color: #000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .forecast-day img {
+    width: 60px;
+    height: 60px;
+    margin: 10px 0;
+  }
+
+  #current-date-time {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+    color: #333;
+  }
+</style>
+
 </head>
 <body>
 
