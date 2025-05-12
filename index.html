@@ -6,128 +6,146 @@
   <title>Weather Assistant</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    /* Cool Modern Glassmorphic Style */
-    body {
+    body, html {
       margin: 0;
+      padding: 0;
+      height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
-      color: #ffffff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
     }
+
     .header {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(6px);
-      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
       font-size: 28px;
-      font-weight: bold;
+      padding: 20px;
       text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
+
     .container {
-      margin-top: 30px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
+      margin: 20px auto;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
       border-radius: 20px;
-      padding: 30px 20px;
+      padding: 20px;
       width: 90%;
       max-width: 500px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      color: #fff;
+      box-sizing: border-box;
     }
+
     input[type="text"] {
       width: 100%;
       padding: 14px;
-      font-size: 16px;
       border-radius: 12px;
       border: none;
-      outline: none;
       margin-bottom: 20px;
       background: rgba(255, 255, 255, 0.2);
-      color: white;
-      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      color: #fff;
+      box-sizing: border-box;
     }
-    input[type="text"]::placeholder {
-      color: #ddd;
-    }
+
     .button-group {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 25px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
+
     button {
       flex: 1;
       padding: 14px;
-      font-size: 16px;
-      border: none;
       border-radius: 10px;
-      background: #6a00ff;
+      border: none;
+      background: #4fc3f7;
       color: white;
       cursor: pointer;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
     }
-    button:hover {
-      background: #8e2de2;
-    }
-    #weather-info {
-      font-size: 18px;
-      background: rgba(255, 255, 255, 0.2);
+
+    #friendWeatherInfo {
+      background: #fff;
+      color: #000;
       border-radius: 12px;
       padding: 15px;
-      margin-bottom: 25px;
-      color: #fff;
-      white-space: pre-line;
+      text-align: center;
+      margin-bottom: 15px;
     }
+
+    #friendWeatherInfo img {
+      width: 80px;
+      height: 80px;
+    }
+
     #map {
       height: 250px;
       width: 100%;
       border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      margin-bottom: 15px;
     }
+
     .forecast {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 15px;
+      overflow-x: auto;
+      padding-bottom: 10px;
     }
+
     .forecast-day {
-      background: #ffffff20;
-      border: 1px solid #ccc;
+      flex: 0 0 150px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
       padding: 10px;
-      border-radius: 10px;
-      width: 120px;
       text-align: center;
     }
+
     .forecast-day img {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
     }
+    #description {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    padding: 8px 16px;
+    display: inline-block;
+    margin-top: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-transform: capitalize;
+    font-style:capitalize;
+    }
+
   </style>
 </head>
 <body>
 
-<div class="header">Weather Assistant App</div>
+<div class="header">
+    Weather Assistant App
+   
+</div>
 
 <div class="container">
-  <div id="current-date-time" style="text-align:center; margin-bottom: 20px; font-size: 18px;"></div>
-
+ <div id="current-date-time" style="text-align:center; margin-bottom: 20px; font-size: 18px;"></div>
   <input type="text" id="cityInput" placeholder="Enter city name" />
 
   <div class="button-group">
     <button onclick="searchCity()">🔍 Search</button>
     <button onclick="startVoice()">🎤 Voice</button>
-    <button onclick="detectLocation()">📍Auto Detect</button>
+    <button onclick="detectLocation()">📍 Auto Detect</button>
   </div>
 
-  <div id="weather-info">Weather info will appear here...</div>
+  <!-- Friend-style Weather Block -->
+  <div id="friendWeatherInfo">
+    <h2 id="cityName">City Name</h2>
+    <img id="weatherIcon" src="" alt="Weather Icon"/>
+    <h1 id="temperature">--°C</h1>
+    <p id="description">Weather Description</p>
+  </div>
+
   <div id="map"></div>
   <div id="forecast" class="forecast"></div>
-
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -152,152 +170,80 @@
       alert("Please enter a city name.");
       return;
     }
-    showWeather(city);
-  }
-
-  function showWeather(city) {
-    console.log("Fetching weather for:", city); // Log city name
-
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-
-          console.log("API URL:", `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`); // Log API URL
-
-          map.setView([lat, lon], 10);
-          if (marker) {
-            marker.setLatLng([lat, lon]);
-          } else {
-            marker = L.marker([lat, lon]).addTo(map);
-          }
-          // Call the showWeatherByCoords function to display weather and forecast
-          showWeatherByCoords(lat, lon, city);
-        } else {
-          alert("City not found.");
-        }
-      })
-      .catch(err => {
-        console.error("Location fetch error", err);
-        alert("Error fetching location.");
-      });
-  }
-
-  function showWeatherByCoords(lat, lon, cityName = "Your Location") {
-    map.setView([lat, lon], 10);
-    if (marker) {
-      marker.setLatLng([lat, lon]);
-    } else {
-      marker = L.marker([lat, lon]).addTo(map);
-    }
-
-    // Current weather
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(weatherData => {
-        console.log("API Response:", weatherData); // Log API response
-
-        const temp = weatherData.main.temp;
-        const condition = weatherData.weather[0].description;
-        document.getElementById("weather-info").innerText =
-          `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
-      })
-      .catch(err => {
-        console.error("Weather API error", err);
-        alert("Failed to fetch weather info.");
-      });
-
-    // Forecast
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(forecastData => {
-        console.log("Forecast API Response:", forecastData); // Log forecast API response
-
-        const forecastMap = new Map();
-        forecastData.list.forEach(item => {
-          const date = item.dt_txt.split(' ')[0];
-          if (!forecastMap.has(date)) {
-            forecastMap.set(date, item);
-          }
-        });
-
-        const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
-
-        if (dailyForecast.length > 0) {
-          const forecastHTML = dailyForecast.map(item => {
-            const date = new Date(item.dt * 1000).toLocaleDateString();
-            const temp = item.main.temp;
-            const condition = item.weather[0].description;
-            const icon = item.weather[0].icon;
-            return `
-              <div class="forecast-day">
-                <p>${date}</p>
-                <p>${temp}°C</p>
-                <p>${condition}</p>
-                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
-              </div>
-            `;
-          }).join('');
-
-          document.getElementById("forecast").innerHTML = forecastHTML;
-        } else {
-          document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
-        }
-      })
-      .catch(err => {
-        console.error("Forecast API error", err);
-        alert("Failed to fetch forecast data.");
-      });
+    fetchWeather(city);
   }
 
   function detectLocation() {
-    if (location.protocol !== "https:" && location.hostname !== "localhost") {
-      alert("Location access requires HTTPS or localhost.");
-      return;
-    }
-    document.getElementById("weather-info").innerText = "Detecting location and fetching weather...";
-
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
-
           fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
             .then(response => response.json())
             .then(data => {
               const city = data.address.city || data.address.town || data.address.village || "Your Location";
               document.getElementById("cityInput").value = city;
-              showWeatherByCoords(lat, lon, city);
-            })
-            .catch(() => {
-              showWeatherByCoords(lat, lon, "Your Location");
+              fetchWeather(city);
             });
         },
-        error => {
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              alert("Permission denied. Please allow location access.");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              alert("Location information is unavailable.");
-              break;
-            case error.TIMEOUT:
-              alert("Location request timed out.");
-              break;
-            default:
-              alert("An unknown error occurred.");
-          }
+        () => {
+          alert("Unable to access your location.");
         }
       );
-    } else {
-      alert("Geolocation is not supported by this browser.");
     }
   }
+  document.getElementById("friendWeatherInfo").style.display = "none";
+  function fetchWeather(city) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=3c4c0fc184b9bcda272f8bb75917219b&units=metric`)
+      .then(response => response.json())
+      .then(data => {
 
-  function updateDateTime() {
+        document.getElementById("friendWeatherInfo").style.display = "block";
+        // Friend style block
+        document.getElementById("cityName").textContent = data.name;
+        document.getElementById("temperature").textContent = `${Math.round(data.main.temp)}°C`;
+        document.getElementById("description").textContent = data.weather[0].description;
+        document.getElementById("weatherIcon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+        // Map
+        const lat = data.coord.lat;
+        const lon = data.coord.lon;
+        map.setView([lat, lon], 10);
+        if (marker) {
+          marker.setLatLng([lat, lon]);
+        } else {
+          marker = L.marker([lat, lon]).addTo(map);
+        }
+
+        // Forecast
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+          .then(response => response.json())
+          .then(forecastData => {
+            const forecastMap = new Map();
+            forecastData.list.forEach(item => {
+              const date = item.dt_txt.split(' ')[0];
+              if (!forecastMap.has(date)) {
+                forecastMap.set(date, item);
+              }
+            });
+
+            const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
+
+            if (dailyForecast.length > 0) {
+              document.getElementById("forecast").innerHTML = dailyForecast.map(item => `
+                <div class="forecast-day">
+                  <p>${new Date(item.dt * 1000).toLocaleDateString()}</p>
+                  <p>${item.main.temp}°C</p>
+                  <p>${item.weather[0].description}</p>
+                  <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png" alt="weather icon" />
+                </div>
+              `).join('');
+            }
+          });
+      });
+  }
+function updateDateTime() {
     const date = new Date();
     const options = {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -310,8 +256,7 @@
 
   setInterval(updateDateTime, 1000);
   updateDateTime();
-
 </script>
-<a href="privacy.html" target="_blank">Privacy Policy</a>
+
 </body>
 </html>
