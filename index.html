@@ -147,7 +147,14 @@
       alert("Voice recognition only works in supported Android apps.");
     }
   }
-
+  function onVoiceResult(city) {
+    if (city) {
+        document.getElementById("cityInput").value = city;
+        showWeather(city);
+    } else {
+        alert("No voice input detected.");
+    }
+  }
   function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
