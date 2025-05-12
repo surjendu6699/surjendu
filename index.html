@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -15,108 +16,109 @@
       background: linear-gradient(135deg, #74ebd5, #acb6e5);
     }
 
-    .header {
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
-      font-size: 28px;
-      padding: 20px;
-      text-align: center;
-    }
+```
+.header {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 28px;
+  padding: 20px;
+  text-align: center;
+}
 
-    .container {
-      margin: 20px auto;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(16px);
-      border-radius: 20px;
-      padding: 20px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      color: #fff;
-      box-sizing: border-box;
-    }
+.container {
+  margin: 20px auto;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  box-sizing: border-box;
+}
 
-    input[type="text"] {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      margin-bottom: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      box-sizing: border-box;
-    }
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  box-sizing: border-box;
+}
 
-    .button-group {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
 
-    button {
-      flex: 1;
-      padding: 14px;
-      border-radius: 10px;
-      border: none;
-      background: #4fc3f7;
-      color: white;
-      cursor: pointer;
-    }
+button {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: #4fc3f7;
+  color: white;
+  cursor: pointer;
+}
 
-    #friendWeatherInfo {
-      background: #fff;
-      color: #000;
-      border-radius: 12px;
-      padding: 15px;
-      text-align: center;
-      margin-bottom: 15px;
-    }
+#friendWeatherInfo {
+  background: #fff;
+  color: #000;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  margin-bottom: 15px;
+}
 
-    #friendWeatherInfo img {
-      width: 80px;
-      height: 80px;
-    }
+#friendWeatherInfo img {
+  width: 80px;
+  height: 80px;
+}
 
-    #map {
-      height: 250px;
-      width: 100%;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
+#map {
+  height: 250px;
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 15px;
+}
 
-    .forecast {
-      display: flex;
-      gap: 15px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-    }
+.forecast {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
 
-    .forecast-day {
-      flex: 0 0 150px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 15px;
-      padding: 10px;
-      text-align: center;
-    }
+.forecast-day {
+  flex: 0 0 150px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 10px;
+  text-align: center;
+}
 
-    .forecast-day img {
-      width: 60px;
-      height: 60px;
-    }
-
-    #description {
-      font-size: 18px;
-      font-weight: 600;
-      color: #333;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 20px;
-      padding: 8px 16px;
-      display: inline-block;
-      margin-top: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      text-transform: capitalize;
-      font-style: capitalize;
-    }
+.forecast-day img {
+  width: 60px;
+  height: 60px;
+}
+#description {
+font-size: 18px;
+font-weight: 600;
+color: #333;
+background: rgba(255, 255, 255, 0.7);
+border-radius: 20px;
+padding: 8px 16px;
+display: inline-block;
+margin-top: 10px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+text-transform: capitalize;
+font-style:capitalize;
+}
+```
 
   </style>
 </head>
@@ -124,10 +126,11 @@
 
 <div class="header">
     Weather Assistant App
+
 </div>
 
 <div class="container">
-  <div id="current-date-time" style="text-align:center; margin-bottom: 20px; font-size: 18px;"></div>
+ <div id="current-date-time" style="text-align:center; margin-bottom: 20px; font-size: 18px;"></div>
   <input type="text" id="cityInput" placeholder="Enter city name" />
 
   <div class="button-group">
@@ -137,7 +140,8 @@
   </div>
 
   <!-- Friend-style Weather Block -->
-  <div id="friendWeatherInfo" style="display: none;">
+
+  <div id="friendWeatherInfo">
     <h2 id="cityName">City Name</h2>
     <img id="weatherIcon" src="" alt="Weather Icon"/>
     <h1 id="temperature">--°C</h1>
@@ -149,6 +153,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
   let map = L.map('map').setView([20.5937, 78.9629], 5);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -162,12 +167,6 @@
     } else {
       alert("Voice recognition only works in supported Android apps.");
     }
-  }
-
-  function onVoiceResult(result) {
-    console.log("Voice result received:", result);
-    document.getElementById("cityInput").value = result;
-    fetchWeather(result);
   }
 
   function searchCity() {
@@ -199,14 +198,14 @@
       );
     }
   }
-
+  document.getElementById("friendWeatherInfo").style.display = "none";
   function fetchWeather(city) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=3c4c0fc184b9bcda272f8bb75917219b&units=metric`)
       .then(response => response.json())
       .then(data => {
 
         document.getElementById("friendWeatherInfo").style.display = "block";
-        // Friend-style weather block
+        // Friend style block
         document.getElementById("cityName").textContent = data.name;
         document.getElementById("temperature").textContent = `${Math.round(data.main.temp)}°C`;
         document.getElementById("description").textContent = data.weather[0].description;
@@ -222,39 +221,34 @@
           marker = L.marker([lat, lon]).addTo(map);
         }
 
-        // Weather forecast
-        fetchWeatherForecast(city);
+        // Forecast
+        fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+          .then(response => response.json())
+          .then(forecastData => {
+            const forecastMap = new Map();
+            forecastData.list.forEach(item => {
+              const date = item.dt_txt.split(' ')[0];
+              if (!forecastMap.has(date)) {
+                forecastMap.set(date, item);
+              }
+            });
+
+            const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
+
+            if (dailyForecast.length > 0) {
+              document.getElementById("forecast").innerHTML = dailyForecast.map(item => `
+                <div class="forecast-day">
+                  <p>${new Date(item.dt * 1000).toLocaleDateString()}</p>
+                  <p>${item.main.temp}°C</p>
+                  <p>${item.weather[0].description}</p>
+                  <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png" alt="weather icon" />
+                </div>
+              `).join('');
+            }
+          });
       });
   }
-
-  function fetchWeatherForecast(city) {
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(forecastData => {
-        const forecastMap = new Map();
-        forecastData.list.forEach(item => {
-          const date = item.dt_txt.split(' ')[0];
-          if (!forecastMap.has(date)) {
-            forecastMap.set(date, item);
-          }
-        });
-
-        const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
-
-        if (dailyForecast.length > 0) {
-          document.getElementById("forecast").innerHTML = dailyForecast.map(item => `
-            <div class="forecast-day">
-              <p>${new Date(item.dt * 1000).toLocaleDateString()}</p>
-              <p>${item.main.temp}°C</p>
-              <p>${item.weather[0].description}</p>
-              <img src="https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png" alt="weather icon" />
-            </div>
-          `).join('');
-        }
-      });
-  }
-
-  function updateDateTime() {
+function updateDateTime() {
     const date = new Date();
     const options = {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
