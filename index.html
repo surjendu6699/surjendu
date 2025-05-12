@@ -173,7 +173,7 @@
    function onVoiceResult(result) {
     console.log("Voice result received:", result);
     document.getElementById("cityInput").value = result;
-    fetchWeather(result);
+    fetchWeatherForecast(result);
   }
   function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
