@@ -6,89 +6,140 @@
   <title>Weather App with Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to right, #e0eafc, #cfdef3);
-    }
-    #header {
-      background-color: #1e3c72;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
-    #controls {
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    #cityInput {
-      width: 250px;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-    button {
-      margin: 5px;
-      padding: 10px 15px;
-      background-color: #1e3c72;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #274b8b;
-    }
-    #map {
-      height: 400px;
-      width: 100%;
-      margin: 20px 0;
-    }
-    #weather-info, #forecast {
-      padding: 15px;
-      text-align: center;
-      background: white;
-      margin: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .forecast-day {
-      display: inline-block;
-      margin: 10px;
-      padding: 10px;
-      background: #f0f0f0;
-      border-radius: 8px;
-      text-align: center;
-    }
-    #current-date-time {
-      margin-top: 10px;
-      color: #333;
-    }
+   body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to right, #e0eafc, #cfdef3);
+}
+
+#header {
+  background-color: #1e3c72;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 24px;
+}
+
+#controls {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#cityInput {
+  width: 80%;
+  max-width: 300px;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 15px;
+  background-color: #1e3c72;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #274b8b;
+}
+
+#map {
+  height: 50vh;
+  width: 100%;
+  margin: 20px 0;
+}
+
+#weather-info, #forecast {
+  padding: 15px;
+  text-align: center;
+  background: white;
+  margin: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.forecast-day {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  text-align: center;
+  width: 100px;
+}
+
+#current-date-time {
+  margin-top: 10px;
+  color: #333;
+  font-size: 16px;
+}
+
+/* Media Queries for smaller screens */
+@media (max-width: 600px) {
+  #header {
+    font-size: 20px;
+  }
+
+  #controls {
+    padding: 10px;
+  }
+
+  #cityInput, button {
+    width: 90%;
+    font-size: 14px;
+  }
+
+  #map {
+    height: 40vh;
+  }
+
+  .forecast-day {
+    width: 80px;
+  }
+
+  #weather-info, #forecast {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
   </style>
 </head>
 <body>
 
   <div id="header">
-    <h1>Weather Assistant</h1>
-    <div id="current-date-time"></div>
+    <h1>Weather Assistant App</h1>
+   
   </div>
 
   <div id="controls">
+    <div id="current-date-time"></div>
     <input type="text" id="cityInput" placeholder="Enter city name">
     <div>
       <button onclick="searchCity()">Search City</button>
       <button onclick="startVoice()">Voice Search</button>
       <button onclick="detectLocation()">Detect Location</button>
-    </div>
-  </div>
+   
+      <div id="weather-info">Weather information will appear here.</div>
+      <div id="forecast">Forecast will appear here.</div>
+      <div id="map">
 
-  <div id="map"></div>
-  <div id="weather-info">Weather information will appear here.</div>
-  <div id="forecast">Forecast will appear here.</div>
+    </div>
+  
+ 
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
