@@ -1,328 +1,271 @@
- <!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather Assistant</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App with Map</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    /* Cool Modern Glassmorphic Style */
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
-      color: #ffffff;
-      min-height: 100vh;
+      padding: 0;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+    }
+    #header {
+      background-color: #1e3c72;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    #controls {
+      padding: 15px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    .header {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(6px);
-      padding: 20px;
-      font-size: 28px;
-      font-weight: bold;
-      text-align: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-    .container {
-      margin-top: 30px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 30px 20px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      border-radius: 12px;
-      border: none;
-      outline: none;
-      margin-bottom: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
-    }
-    input[type="text"]::placeholder {
-      color: #ddd;
-    }
-    .button-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-bottom: 25px;
+    #cityInput {
+      width: 250px;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
     }
     button {
-      flex: 1;
-      padding: 14px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      background: #6a00ff;
+      margin: 5px;
+      padding: 10px 15px;
+      background-color: #1e3c72;
       color: white;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
-      transition: background 0.3s ease;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
     }
     button:hover {
-      background: #8e2de2;
-    }
-    #weather-info {
-      font-size: 18px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 25px;
-      color: #fff;
-      white-space: pre-line;
+      background-color: #274b8b;
     }
     #map {
-      height: 250px;
+      height: 400px;
       width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      margin: 20px 0;
     }
-    .forecast {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
+    #weather-info, #forecast {
+      padding: 15px;
+      text-align: center;
+      background: white;
+      margin: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     .forecast-day {
-      background: #ffffff20;
-      border: 1px solid #ccc;
+      display: inline-block;
+      margin: 10px;
       padding: 10px;
-      border-radius: 10px;
-      width: 120px;
+      background: #f0f0f0;
+      border-radius: 8px;
       text-align: center;
     }
-    .forecast-day img {
-      width: 50px;
-      height: 50px;
+    #current-date-time {
+      margin-top: 10px;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
-<div class="header">Weather Assistant App</div>
-
-<div class="container">
-  <div id="current-date-time" style="text-align:center; margin-bottom: 20px; font-size: 18px;"></div>
-
-  <input type="text" id="cityInput" placeholder="Enter city name" />
-
-  <div class="button-group">
-    <button onclick="searchCity()">🔍 Search</button>
-    <button onclick="startVoice()">🎤 Voice</button>
-    <button onclick="detectLocation()">📍Auto Detect</button>
+  <div id="header">
+    <h1>Weather Assistant</h1>
+    <div id="current-date-time"></div>
   </div>
 
-  <div id="weather-info">Weather info will appear here...</div>
+  <div id="controls">
+    <input type="text" id="cityInput" placeholder="Enter city name">
+    <div>
+      <button onclick="searchCity()">Search City</button>
+      <button onclick="startVoice()">Voice Search</button>
+      <button onclick="detectLocation()">Detect Location</button>
+    </div>
+  </div>
+
   <div id="map"></div>
-  <div id="forecast" class="forecast"></div>
+  <div id="weather-info">Weather information will appear here.</div>
+  <div id="forecast">Forecast will appear here.</div>
 
-</div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    let map = L.map('map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    let marker;
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<script>
-  let map = L.map('map').setView([20.5937, 78.9629], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-  let marker;
-
-  function startVoice() {
-    if (typeof AndroidVoice !== 'undefined') {
-      AndroidVoice.startListening();
-    } else {
-      alert("Voice recognition only works in supported Android apps.");
+    function startVoice() {
+      if (typeof AndroidVoice !== 'undefined') {
+        AndroidVoice.startListening();
+      } else {
+        alert("Voice recognition only works in supported Android apps.");
+      }
     }
-  }
-  function onVoiceResult(city) {
-    if (city) {
+
+    function onVoiceResult(city) {
+      if (city) {
         document.getElementById("cityInput").value = city;
         showWeather(city);
-    } else {
+      } else {
         alert("No voice input detected.");
+      }
     }
-  }
-  function searchCity() {
-    const city = document.getElementById("cityInput").value.trim();
-    if (!city) {
-      alert("Please enter a city name.");
-      return;
+
+    function searchCity() {
+      const city = document.getElementById("cityInput").value.trim();
+      if (!city) {
+        alert("Please enter a city name.");
+        return;
+      }
+      showWeather(city);
     }
-    showWeather(city);
-  }
 
-  function showWeather(city) {
-    console.log("Fetching weather for:", city); // Log city name
-
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
-      .then(response => response.json())
-      .then(data => {
-        if (data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-
-          console.log("API URL:", `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`); // Log API URL
-
-          map.setView([lat, lon], 10);
-          if (marker) {
-            marker.setLatLng([lat, lon]);
+    function showWeather(city) {
+      console.log("Fetching weather for:", city);
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length > 0) {
+            const lat = parseFloat(data[0].lat);
+            const lon = parseFloat(data[0].lon);
+            map.setView([lat, lon], 10);
+            if (marker) {
+              marker.setLatLng([lat, lon]);
+            } else {
+              marker = L.marker([lat, lon]).addTo(map);
+            }
+            showWeatherByCoords(lat, lon, city);
           } else {
-            marker = L.marker([lat, lon]).addTo(map);
+            alert("City not found.");
           }
-          // Call the showWeatherByCoords function to display weather and forecast
-          showWeatherByCoords(lat, lon, city);
-        } else {
-          alert("City not found.");
-        }
-      })
-      .catch(err => {
-        console.error("Location fetch error", err);
-        alert("Error fetching location.");
-      });
-  }
-
-  function showWeatherByCoords(lat, lon, cityName = "Your Location") {
-    map.setView([lat, lon], 10);
-    if (marker) {
-      marker.setLatLng([lat, lon]);
-    } else {
-      marker = L.marker([lat, lon]).addTo(map);
+        })
+        .catch(err => {
+          console.error("Location fetch error", err);
+          alert("Error fetching location.");
+        });
     }
 
-    // Current weather
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(weatherData => {
-        console.log("API Response:", weatherData); // Log API response
+    function showWeatherByCoords(lat, lon, cityName = "Your Location") {
+      map.setView([lat, lon], 10);
+      if (marker) {
+        marker.setLatLng([lat, lon]);
+      } else {
+        marker = L.marker([lat, lon]).addTo(map);
+      }
 
-        const temp = weatherData.main.temp;
-        const condition = weatherData.weather[0].description;
-        document.getElementById("weather-info").innerText =
-          `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
-      })
-      .catch(err => {
-        console.error("Weather API error", err);
-        alert("Failed to fetch weather info.");
-      });
-
-    // Forecast
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(forecastData => {
-        console.log("Forecast API Response:", forecastData); // Log forecast API response
-
-        const forecastMap = new Map();
-        forecastData.list.forEach(item => {
-          const date = item.dt_txt.split(' ')[0];
-          if (!forecastMap.has(date)) {
-            forecastMap.set(date, item);
-          }
+      fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+        .then(response => response.json())
+        .then(weatherData => {
+          const temp = weatherData.main.temp;
+          const condition = weatherData.weather[0].description;
+          document.getElementById("weather-info").innerText =
+            `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
+        })
+        .catch(err => {
+          console.error("Weather API error", err);
+          alert("Failed to fetch weather info.");
         });
 
-        const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
+      fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+        .then(response => response.json())
+        .then(forecastData => {
+          const forecastMap = new Map();
+          forecastData.list.forEach(item => {
+            const date = item.dt_txt.split(' ')[0];
+            if (!forecastMap.has(date)) {
+              forecastMap.set(date, item);
+            }
+          });
 
-        if (dailyForecast.length > 0) {
-          const forecastHTML = dailyForecast.map(item => {
-            const date = new Date(item.dt * 1000).toLocaleDateString();
-            const temp = item.main.temp;
-            const condition = item.weather[0].description;
-            const icon = item.weather[0].icon;
-            return `
-              <div class="forecast-day">
-                <p>${date}</p>
-                <p>${temp}°C</p>
-                <p>${condition}</p>
-                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
-              </div>
-            `;
-          }).join('');
+          const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
 
-          document.getElementById("forecast").innerHTML = forecastHTML;
-        } else {
-          document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
-        }
-      })
-      .catch(err => {
-        console.error("Forecast API error", err);
-        alert("Failed to fetch forecast data.");
-      });
-  }
-
-  function detectLocation() {
-    if (location.protocol !== "https:" && location.hostname !== "localhost") {
-      alert("Location access requires HTTPS or localhost.");
-      return;
-    }
-    document.getElementById("weather-info").innerText = "Detecting location and fetching weather...";
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-
-          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-            .then(response => response.json())
-            .then(data => {
-              const city = data.address.city || data.address.town || data.address.village || "Your Location";
-              document.getElementById("cityInput").value = city;
-              showWeatherByCoords(lat, lon, city);
-            })
-            .catch(() => {
-              showWeatherByCoords(lat, lon, "Your Location");
-            });
-        },
-        error => {
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              alert("Permission denied. Please allow location access.");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              alert("Location information is unavailable.");
-              break;
-            case error.TIMEOUT:
-              alert("Location request timed out.");
-              break;
-            default:
-              alert("An unknown error occurred.");
+          if (dailyForecast.length > 0) {
+            const forecastHTML = dailyForecast.map(item => {
+              const date = new Date(item.dt * 1000).toLocaleDateString();
+              const temp = item.main.temp;
+              const condition = item.weather[0].description;
+              const icon = item.weather[0].icon;
+              return `
+                <div class="forecast-day">
+                  <p>${date}</p>
+                  <p>${temp}°C</p>
+                  <p>${condition}</p>
+                  <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
+                </div>
+              `;
+            }).join('');
+            document.getElementById("forecast").innerHTML = forecastHTML;
+          } else {
+            document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
           }
-        }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
+        })
+        .catch(err => {
+          console.error("Forecast API error", err);
+          alert("Failed to fetch forecast data.");
+        });
     }
-  }
 
-  function updateDateTime() {
-    const date = new Date();
-    const options = {
-      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-      hour12: true
-    };
-    const formattedDateTime = date.toLocaleString('en-US', options);
-    document.getElementById("current-date-time").innerText = formattedDateTime;
-  }
+    function detectLocation() {
+      if (location.protocol !== "https:" && location.hostname !== "localhost") {
+        alert("Location access requires HTTPS or localhost.");
+        return;
+      }
+      document.getElementById("weather-info").innerText = "Detecting location and fetching weather...";
 
-  setInterval(updateDateTime, 1000);
-  updateDateTime();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+              .then(response => response.json())
+              .then(data => {
+                const city = data.address.city || data.address.town || data.address.village || "Your Location";
+                document.getElementById("cityInput").value = city;
+                showWeatherByCoords(lat, lon, city);
+              })
+              .catch(() => {
+                showWeatherByCoords(lat, lon, "Your Location");
+              });
+          },
+          error => {
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                alert("Permission denied. Please allow location access.");
+                break;
+              case error.POSITION_UNAVAILABLE:
+                alert("Location information is unavailable.");
+                break;
+              case error.TIMEOUT:
+                alert("Location request timed out.");
+                break;
+              default:
+                alert("An unknown error occurred.");
+            }
+          }
+        );
+      } else {
+        alert("Geolocation is not supported by this browser.");
+      }
+    }
 
-</script>
+    function updateDateTime() {
+      const date = new Date();
+      const options = {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit',
+        hour12: true
+      };
+      const formattedDateTime = date.toLocaleString('en-US', options);
+      document.getElementById("current-date-time").innerText = formattedDateTime;
+    }
 
-<a href="privacy.html" target="_blank">Privacy Policy</a>
-
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+  </script>
 </body>
-</html> 
+</html>
