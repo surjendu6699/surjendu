@@ -193,6 +193,10 @@
       alert("Voice recognition only works in supported Android apps.");
     }
   }
+  function onVoiceResult(resultText) {
+    document.getElementById("cityInput").value = resultText;
+    fetchWeather(resultText);
+  }
 
   function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
