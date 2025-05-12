@@ -12,27 +12,13 @@
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow-x: hidden;
+      background: linear-gradient(135deg, #74ebd5, #acb6e5);
     }
-
-    /* Dynamic Background Container */
-    
-    #background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      background: #1e90ff; /* fallback color */
-    }
-
 
     .header {
       background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
       color: white;
       font-size: 28px;
-      font-weight: bold;
       padding: 20px;
       text-align: center;
     }
@@ -47,6 +33,7 @@
       max-width: 500px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       color: #fff;
+      box-sizing: border-box;
     }
 
     input[type="text"] {
@@ -57,13 +44,13 @@
       margin-bottom: 20px;
       background: rgba(255, 255, 255, 0.2);
       color: #fff;
+      box-sizing: border-box;
     }
 
     .button-group {
       display: flex;
       gap: 10px;
       margin-bottom: 20px;
-      flex-wrap: wrap;
     }
 
     button {
@@ -71,23 +58,23 @@
       padding: 14px;
       border-radius: 10px;
       border: none;
-      background: #6a00ff;
+      background: #4fc3f7;
       color: white;
       cursor: pointer;
-      transition: background 0.3s;
     }
 
-    button:hover {
-      background: #8e2de2;
-    }
-
-    #weather-info {
-      font-size: 18px;
-      background: rgba(0, 0, 0, 0.4);
+    #friendWeatherInfo {
+      background: #fff;
+      color: #000;
       border-radius: 12px;
       padding: 15px;
+      text-align: center;
       margin-bottom: 15px;
-      white-space: pre-line;
+    }
+
+    #friendWeatherInfo img {
+      width: 80px;
+      height: 80px;
     }
 
     #map {
@@ -117,17 +104,30 @@
       height: 60px;
     }
 
-   
+    #description {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      padding: 8px 16px;
+      display: inline-block;
+      margin-top: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      text-transform: capitalize;
+      font-style: capitalize;
+    }
 
   </style>
 </head>
 <body>
 
-<div id="background"></div>
-<div class="header">Weather Assistant App</div>
+<div class="header">
+    Weather Assistant App
+</div>
 
 <div class="container">
-  <div id="current-date-time" style="text-align:center; margin-bottom: 20px;"></div>
+  <div id="current-date-time" style="text-align:center; margin-bottom: 20px; font-size: 18px;"></div>
   <input type="text" id="cityInput" placeholder="Enter city name" />
 
   <div class="button-group">
@@ -136,7 +136,14 @@
     <button onclick="detectLocation()">📍 Auto Detect</button>
   </div>
 
-  <div id="weather-info">Weather info will appear here...</div>
+  <!-- Friend-style Weather Block -->
+  <div id="friendWeatherInfo" style="display: none;">
+    <h2 id="cityName">City Name</h2>
+    <img id="weatherIcon" src="" alt="Weather Icon"/>
+    <h1 id="temperature">--°C</h1>
+    <p id="description">Weather Description</p>
+  </div>
+
   <div id="map"></div>
   <div id="forecast" class="forecast"></div>
 </div>
@@ -149,20 +156,6 @@
   }).addTo(map);
   let marker;
 
-  function setBackground(condition) {
-    const bg = document.getElementById('background');
-    bg.className = ""; // Reset all
-    if (condition.includes("clear sky")) {
-      bg.classList.add('clear-sky');
-    } else if (condition.includes("rain")) {
-      bg.classList.add('rain');
-    } else if (condition.includes("broken clouds")) {
-      bg.classList.add('broken-clouds');
-    } else if (condition.includes("overcast clouds")) {
-      bg.classList.add('overcast-clouds');
-    }
-  }
-
   function startVoice() {
     if (typeof AndroidVoice !== 'undefined') {
       AndroidVoice.startListening();
@@ -170,52 +163,72 @@
       alert("Voice recognition only works in supported Android apps.");
     }
   }
-   function onVoiceResult(result) {
+
+  function onVoiceResult(result) {
     console.log("Voice result received:", result);
     document.getElementById("cityInput").value = result;
-    fetchWeatherForecast(result);
+    fetchWeather(result);
   }
+
   function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
       alert("Please enter a city name.");
       return;
     }
-    fetchWeatherForecast(city);
+    fetchWeather(city);
   }
 
-  function showWeather(city) {
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
+  function detectLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+              const city = data.address.city || data.address.town || data.address.village || "Your Location";
+              document.getElementById("cityInput").value = city;
+              fetchWeather(city);
+            });
+        },
+        () => {
+          alert("Unable to access your location.");
+        }
+      );
+    }
+  }
+
+  function fetchWeather(city) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=3c4c0fc184b9bcda272f8bb75917219b&units=metric`)
       .then(response => response.json())
       .then(data => {
-        if (data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
-          map.setView([lat, lon], 10);
-          if (marker) {
-            marker.setLatLng([lat, lon]);
-          } else {
-            marker = L.marker([lat, lon]).addTo(map);
-          }
-          showWeatherByCoords(lat, lon, city);
+
+        document.getElementById("friendWeatherInfo").style.display = "block";
+        // Friend-style weather block
+        document.getElementById("cityName").textContent = data.name;
+        document.getElementById("temperature").textContent = `${Math.round(data.main.temp)}°C`;
+        document.getElementById("description").textContent = data.weather[0].description;
+        document.getElementById("weatherIcon").src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+
+        // Map
+        const lat = data.coord.lat;
+        const lon = data.coord.lon;
+        map.setView([lat, lon], 10);
+        if (marker) {
+          marker.setLatLng([lat, lon]);
         } else {
-          alert("City not found.");
+          marker = L.marker([lat, lon]).addTo(map);
         }
+
+        // Weather forecast
+        fetchWeatherForecast(city);
       });
   }
 
-  function showWeatherByCoords(lat, lon, cityName) {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(weatherData => {
-        const temp = weatherData.main.temp;
-        const condition = weatherData.weather[0].description;
-        setBackground(condition.toLowerCase());
-        document.getElementById("weather-info").innerText =
-          `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
-      });
-
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+  function fetchWeatherForecast(city) {
+    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
       .then(response => response.json())
       .then(forecastData => {
         const forecastMap = new Map();
@@ -241,126 +254,20 @@
       });
   }
 
-  function detectLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
-            .then(response => response.json())
-            .then(data => {
-              const city = data.address.city || data.address.town || data.address.village || "Your Location";
-              document.getElementById("cityInput").value = city;
-              showWeatherByCoords(lat, lon, city);
-            });
-        },
-        () => {
-          alert("Unable to access your location.");
-        }
-      );
-    }
+  function updateDateTime() {
+    const date = new Date();
+    const options = {
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: true
+    };
+    const formattedDateTime = date.toLocaleString('en-US', options);
+    document.getElementById("current-date-time").innerText = formattedDateTime;
   }
 
-  function updateDateTime() {
-    const now = new Date();
-    document.getElementById("current-date-time").innerText = now.toLocaleString();
-  }
   setInterval(updateDateTime, 1000);
   updateDateTime();
-let rainCanvas, ctx, animationId;
-
-function clearBackgroundEffects() {
-    if (rainCanvas) {
-        rainCanvas.remove();
-        rainCanvas = null;
-        cancelAnimationFrame(animationId);
-    }
-}
-
-function setBackground(condition) {
-    clearBackgroundEffects();
-    const bg = document.getElementById('background');
-    bg.style.background = ""; // Reset background
-
-    if (condition.includes("clear sky")) {
-        bg.style.background = "linear-gradient(to top, #87cefa, #ffffff)";
-    } else if (condition.includes("rain")) {
-        createRainEffect();
-    } else if (condition.includes("broken clouds") || condition.includes("overcast clouds")) {
-        bg.style.background = "linear-gradient(to top, #d3d3d3, #ffffff)";
-    }
-}
-
-// 💦 Canvas Rain Animation (Clean and Smooth)
-function createRainEffect() {
-    rainCanvas = document.createElement('canvas');
-    rainCanvas.width = window.innerWidth;
-    rainCanvas.height = window.innerHeight;
-    rainCanvas.style.position = 'absolute';
-    rainCanvas.style.top = '0';
-    rainCanvas.style.left = '0';
-    rainCanvas.style.width = '100%';
-    rainCanvas.style.height = '100%';
-    document.getElementById('background').appendChild(rainCanvas);
-    ctx = rainCanvas.getContext('2d');
-
-    let drops = [];
-    for (let i = 0; i < 500; i++) {
-        drops.push({
-            x: Math.random() * rainCanvas.width,
-            y: Math.random() * rainCanvas.height,
-            l: Math.random() * 1,
-            xs: -4 + Math.random() * 4 + 2,
-            ys: Math.random() * 10 + 10
-        });
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, rainCanvas.width, rainCanvas.height);
-        ctx.strokeStyle = 'rgba(174,194,224,0.5)';
-        ctx.lineWidth = 1;
-        ctx.lineCap = 'round';
-
-        for (let i = 0; i < drops.length; i++) {
-            let d = drops[i];
-            ctx.beginPath();
-            ctx.moveTo(d.x, d.y);
-            ctx.lineTo(d.x + d.l * d.xs, d.y + d.l * d.ys);
-            ctx.stroke();
-        }
-
-        move();
-    }
-
-    function move() {
-        for (let i = 0; i < drops.length; i++) {
-            let d = drops[i];
-            d.x += d.xs;
-            d.y += d.ys;
-            if (d.x > rainCanvas.width || d.y > rainCanvas.height) {
-                d.x = Math.random() * rainCanvas.width;
-                d.y = -20;
-            }
-        }
-    }
-
-    function animate() {
-        draw();
-        animationId = requestAnimationFrame(animate);
-    }
-
-    animate();
-}
-
-window.addEventListener('resize', () => {
-    if (rainCanvas) {
-        rainCanvas.width = window.innerWidth;
-        rainCanvas.height = window.innerHeight;
-    }
-});
-
 </script>
-<a href="privacy.html" target="_blank" style="color:#fff; display:block; text-align:center; margin-top:20px;">Privacy Policy</a>
+
 </body>
 </html>
