@@ -193,9 +193,16 @@
       alert("Voice recognition only works in supported Android apps.");
     }
   }
+  function updateMap(cityName) {
+    // If you use Leaflet or Google Maps or others, use their API to move the map
+    geocodeCity(cityName, function(lat, lon) {
+        map.setView([lat, lon], 10); // Example using Leaflet
+    });
+}
   function onVoiceResult(resultText) {
     document.getElementById("cityInput").value = resultText;
     fetchWeather(resultText);
+    updateMap(resultText);
   }
 
   function searchCity() {
