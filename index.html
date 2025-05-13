@@ -40,6 +40,7 @@
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
       margin-bottom: 30px;
       align-items: center;
+
     }
 
     #current-date-time {
@@ -217,7 +218,7 @@
         alert("No voice input detected.");
     }
   }
-   function searchCity() {
+  function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
       alert("Please enter a city name.");
@@ -349,11 +350,9 @@
               const city = data.address.city || data.address.town || data.address.village || "Your Location";
               document.getElementById("cityInput").value = city;
               showWeatherByCoords(lat, lon, city);
-             
             })
             .catch(() => {
               showWeatherByCoords(lat, lon, "Your Location");
-             
             });
         },
         error => {
