@@ -349,8 +349,7 @@
               const city = data.address.city || data.address.town || data.address.village || "Your Location";
               document.getElementById("cityInput").value = city;
               showWeatherByCoords(lat, lon, city);
-               // Fetch the forecast if needed
-               fetchWeatherForecast(city); // Ensure this is after the weather info
+             
             })
             .catch(() => {
               showWeatherByCoords(lat, lon, "Your Location");
@@ -377,57 +376,6 @@
       alert("Geolocation is not supported by this browser.");
     }
   }
- function fetchWeatherForecast(city) {
-    console.log(`Fetching forecast for ${city}...`);
-    
-    // Ensure we only fetch if a valid city is provided
-    if (!city) {
-        console.error("City name is required for forecast fetch.");
-        return;
-    }
-
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-        .then(response => response.json())
-        .then(forecastData => {
-            console.log("Forecast data fetched:", forecastData);
-
-            const forecastMap = new Map();
-            forecastData.list.forEach(item => {
-                const date = item.dt_txt.split(' ')[0];
-                if (!forecastMap.has(date)) {
-                    forecastMap.set(date, item);
-                }
-            });
-
-            const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
-
-            if (dailyForecast.length > 0) {
-                const forecastHTML = dailyForecast.map(item => {
-                    const date = new Date(item.dt * 1000).toLocaleDateString();
-                    const temp = item.main.temp;
-                    const condition = item.weather[0].description;
-                    const icon = item.weather[0].icon;
-                    return `
-                      <div class="forecast-day">
-                        <p>${date}</p>
-                        <p>${temp}°C</p>
-                        <p>${condition}</p>
-                        <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
-                      </div>
-                    `;
-                }).join('');
-
-                document.getElementById("forecast").innerHTML = forecastHTML;
-            } else {
-                document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
-            }
-        })
-        .catch(err => {
-            console.error("Forecast API error", err);
-            alert("Failed to fetch forecast data.");
-        });
-}
- 
   function setBackground(condition) {
     const bg = document.getElementById('background');
     bg.className = ""; // Reset all
