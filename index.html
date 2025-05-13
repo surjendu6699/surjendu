@@ -217,13 +217,20 @@
         alert("No voice input detected.");
     }
   }
-  function searchCity() {
+   function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
       alert("Please enter a city name.");
       return;
     }
-    showWeather(city);
+     // Try to get from DB first via Android
+    if (typeof AndroidBridge !== 'undefined') {
+        AndroidBridge.requestCachedWeather(city);
+    } else {
+        // If running outside Android, fallback to API directly
+        showWeather(city);
+    }
+    
   }
 
   function showWeather(city) {
@@ -393,6 +400,24 @@
 
   setInterval(updateDateTime, 1000);
   updateDateTime();
+
+  function showWeatherFromCache(jsonString) {
+    if (!jsonString || jsonString === "null") {
+        // If DB has no data, fallback to API
+        const city = document.getElementById("cityInput").value.trim();
+        showWeather(city);
+        return;
+    }
+
+    try {
+        const data = JSON.parse(jsonString);
+        document.getElementById("weather-info").innerText =
+            `Cached Weather:\nCity: ${data.city}\nTemperature: ${data.temp}°C\nCondition: ${data.condition}`;
+    } catch (e) {
+        alert("Failed to parse cached weather data.");
+    }
+}
+
 
 </script>
 
