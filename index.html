@@ -236,7 +236,7 @@
 
   function showWeather(city) {
     console.log("Fetching weather for:", city); // Log city name
-
+    //keep map styling consist
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
       .then(response => response.json())
       .then(data => {
@@ -246,7 +246,11 @@
 
           console.log("API URL:", `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`); // Log API URL
 
-          map.setView([lat, lon], 10);
+          // Keep map zoom level static after search (avoid resetting the view after search)
+          if (map.getZoom() !== 10) {
+            map.setView([lat, lon], 10);
+          }
+
           if (marker) {
             marker.setLatLng([lat, lon]);
           } else {
@@ -386,15 +390,24 @@
 }
 
   function setBackground(condition) {
-    const bg = document.getElementById('background');
+   const bg = document.getElementById('background');
     bg.className = ""; // Reset all
+
     if (condition.includes("clear sky")) {
-        bg.style.background = "linear-gradient(to top, #87cefa, #ffffff)";
+        if (!bg.classList.contains('clear-sky')) {
+            bg.classList.add('clear-sky');
+            bg.style.background = "linear-gradient(to top, #87cefa, #ffffff)";
+        }
     } else if (condition.includes("rain")) {
-        bg.classList.add('rain');
-        bg.style.background = "#1e90ff";
+        if (!bg.classList.contains('rain')) {
+            bg.classList.add('rain');
+            bg.style.background = "#1e90ff";
+        }
     } else if (condition.includes("broken clouds") || condition.includes("overcast clouds")) {
-        bg.style.background = "linear-gradient(to top, #d3d3d3, #ffffff)";
+        if (!bg.classList.contains('cloudy')) {
+            bg.classList.add('cloudy');
+            bg.style.background = "linear-gradient(to top, #d3d3d3, #ffffff)";
+        }
     }
 }
 
