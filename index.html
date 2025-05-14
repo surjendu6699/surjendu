@@ -46,8 +46,7 @@
     #current-date-time {
       text-align: center;
       font-size: 16px;
-      margin-bottom: 15px
-      color:black;
+      margin-bottom: 15px;
     }
 
     input[type="text"] {
@@ -58,7 +57,7 @@
       border: none;
       margin-bottom: 20px;
       background: rgba(255, 255, 255, 0.2);
-      color: black;
+      color: rgb(7, 7, 7);
       box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
       backdrop-filter: blur(10px);
     }
@@ -142,9 +141,9 @@
     }
 
     a:hover {
-      color:#000000;
+      color: #fff;
     }
-    
+    /* 🌧 CSS-Only Rain Animation */
 #background.rain::before {
   content: "";
   position: absolute;
@@ -174,7 +173,7 @@
   </style>
 </head>
 
-<body id="background">
+<body>
 
 <div class="header">Weather Assistant App</div>
 
@@ -237,8 +236,7 @@
 
   function showWeather(city) {
     console.log("Fetching weather for:", city); // Log city name
-     document.getElementById("current-date-time").style.color = "black";
-    //keep map styling consist
+
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
       .then(response => response.json())
       .then(data => {
@@ -248,11 +246,7 @@
 
           console.log("API URL:", `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`); // Log API URL
 
-          // Keep map zoom level static after search (avoid resetting the view after search)
-          if (map.getZoom() !== 10) {
-            map.setView([lat, lon], 10);
-          }
-
+          map.setView([lat, lon], 10);
           if (marker) {
             marker.setLatLng([lat, lon]);
           } else {
@@ -286,12 +280,8 @@
 
         const temp = weatherData.main.temp;
         const condition = weatherData.weather[0].description;
-         
-        document.getElementById("weather-info").style.color = #000000;     
         document.getElementById("weather-info").innerText =
           `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
-       
-         setBackground(condition.toLowerCase());
       })
       .catch(err => {
         console.error("Weather API error", err);
@@ -385,33 +375,16 @@
       alert("Geolocation is not supported by this browser.");
     }
   }
- function onNativeLocationFetched(lat, lon) {
-    if (lat != null && lon != null) {
-        showWeatherByCoords(lat, lon);
-    } else {
-        document.getElementById("weather-info").innerText = "Location not available.";
-    }
-}
-
   function setBackground(condition) {
-   const bg = document.getElementById('background');
+    const bg = document.getElementById('background');
     bg.className = ""; // Reset all
-
     if (condition.includes("clear sky")) {
-        if (!bg.classList.contains('clear-sky')) {
-            bg.classList.add('clear-sky');
-            bg.style.background = "linear-gradient(to top, #87cefa, #ffffff)";
-        }
+        bg.style.background = "linear-gradient(to top, #87cefa, #ffffff)";
     } else if (condition.includes("rain")) {
-        if (!bg.classList.contains('rain')) {
-            bg.classList.add('rain');
-            bg.style.background = "#1e90ff";
-        }
+        bg.classList.add('rain');
+        bg.style.background = "#1e90ff";
     } else if (condition.includes("broken clouds") || condition.includes("overcast clouds")) {
-        if (!bg.classList.contains('cloudy')) {
-            bg.classList.add('cloudy');
-            bg.style.background = "linear-gradient(to top, #d3d3d3, #ffffff)";
-        }
+        bg.style.background = "linear-gradient(to top, #d3d3d3, #ffffff)";
     }
 }
 
