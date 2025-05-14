@@ -237,6 +237,7 @@
 
   function showWeather(city) {
     console.log("Fetching weather for:", city); // Log city name
+     document.getElementById("current-date-time").style.color = "black";
     //keep map styling consist
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
       .then(response => response.json())
@@ -285,6 +286,8 @@
 
         const temp = weatherData.main.temp;
         const condition = weatherData.weather[0].description;
+         
+        document.getElementById("weather-info").style.color = "black";     
         document.getElementById("weather-info").innerText =
           `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
        
