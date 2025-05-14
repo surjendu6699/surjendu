@@ -173,7 +173,7 @@
   </style>
 </head>
 
-<body>
+<body id="background">
 
 <div class="header">Weather Assistant App</div>
 
@@ -282,6 +282,8 @@
         const condition = weatherData.weather[0].description;
         document.getElementById("weather-info").innerText =
           `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
+       
+         setBackground(condition.toLowerCase());
       })
       .catch(err => {
         console.error("Weather API error", err);
@@ -375,6 +377,14 @@
       alert("Geolocation is not supported by this browser.");
     }
   }
+ function onNativeLocationFetched(lat, lon) {
+    if (lat != null && lon != null) {
+        showWeatherByCoords(lat, lon);
+    } else {
+        document.getElementById("weather-info").innerText = "Location not available.";
+    }
+}
+
   function setBackground(condition) {
     const bg = document.getElementById('background');
     bg.className = ""; // Reset all
