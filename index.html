@@ -187,7 +187,7 @@
     <button onclick="startVoice()">🎤 Voice</button>
     <button onclick="detectLocation()">📍Auto Detect</button>
   </div>
-  <div id="error" style="display:none; color: yellow; margin-bottom: 10px;"></div>
+
   <div id="weather-info">Weather info will appear here...</div>
   <div id="map"></div>
   <div id="forecast" class="forecast"></div>
@@ -197,11 +197,6 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-window.isOffline = !navigator.onLine;
-
-window.addEventListener('online', () => { window.isOffline = false; });
-window.addEventListener('offline', () => { window.isOffline = true; });
-   
   let map = L.map('map').setView([20.5937, 78.9629], 5);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
@@ -223,43 +218,23 @@ window.addEventListener('offline', () => { window.isOffline = true; });
         alert("No voice input detected.");
     }
   }
- function searchCity() {
+  function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
       alert("Please enter a city name.");
       return;
     }
-    console.log("Search Clicked:", city);
-
-    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.requestCachedWeather) {
-        try {
-            AndroidBridge.requestCachedWeather(city);
-            // Fallback if Android does not respond after 2s
-            setTimeout(() => {
-                // If still no data, attempt direct fetch
-                if (!document.getElementById("weather-info").innerText.includes(city)) {
-                    console.log("No cached data received in time, fetching from API...");
-                    showWeather(city);
-                }
-            }, 2000);
-        } catch (error) {
-            console.error("AndroidBridge error, falling back:", error);
-            showWeather(city);
-        }
+     // Try to get from DB first via Android
+    if (typeof AndroidBridge !== 'undefined') {
+        AndroidBridge.requestCachedWeather(city);
     } else {
-        // Always allow fallback in browser
+        // If running outside Android, fallback to API directly
         showWeather(city);
     }
-}
-
+    
+  }
 
   function showWeather(city) {
-      if (window.isOffline) {
-        // Prevent network fetch if offline — just rely on injected cached data
-        console.log("Offline mode: skipping network fetch");
-        return;
-    }
-   
     console.log("Fetching weather for:", city); // Log city name
 
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
@@ -428,37 +403,20 @@ window.addEventListener('offline', () => { window.isOffline = true; });
   updateDateTime();
 
   function showWeatherFromCache(jsonString) {
-    const errorDiv = document.getElementById('error');
-    const weatherDiv = document.getElementById('weather-info');
-   
     if (!jsonString || jsonString === "null") {
-      if (errorDiv) {
-          errorDiv.style.display = "none";
-      }
-      // No cached data, fallback to online fetch
-      const city = document.getElementById("cityInput").value.trim();
-      showWeather(city);
-      return;
-  }
+        // If DB has no data, fallback to API
+        const city = document.getElementById("cityInput").value.trim();
+        showWeather(city);
+        return;
+    }
 
-  try {
-      const data = JSON.parse(jsonString);
-
-      if (errorDiv) {
-          errorDiv.innerText = "Offline Mode: Showing cached data.";
-          errorDiv.style.display = "block";
-      }
-
-      if (weatherDiv) {
-          weatherDiv.innerText =
+    try {
+        const data = JSON.parse(jsonString);
+        document.getElementById("weather-info").innerText =
             `Cached Weather:\nCity: ${data.city}\nTemperature: ${data.temp}°C\nCondition: ${data.condition}`;
-      }
-  } catch (e) {
-      if (errorDiv) {
-          errorDiv.style.display = "none";
-      }
-      alert("Failed to parse cached weather data.");
-  }
+    } catch (e) {
+        alert("Failed to parse cached weather data.");
+    }
 }
 
 
