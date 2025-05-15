@@ -187,7 +187,7 @@
     <button onclick="startVoice()">🎤 Voice</button>
     <button onclick="detectLocation()">📍Auto Detect</button>
   </div>
-
+  <div id="error" style="display:none; color: yellow; margin-bottom: 10px;"></div>
   <div id="weather-info">Weather info will appear here...</div>
   <div id="map"></div>
   <div id="forecast" class="forecast"></div>
@@ -197,6 +197,11 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
+window.isOffline = !navigator.onLine;
+
+window.addEventListener('online', () => { window.isOffline = false; });
+window.addEventListener('offline', () => { window.isOffline = true; });
+   
   let map = L.map('map').setView([20.5937, 78.9629], 5);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
@@ -235,6 +240,12 @@
   }
 
   function showWeather(city) {
+      if (window.isOffline) {
+        // Prevent network fetch if offline — just rely on injected cached data
+        console.log("Offline mode: skipping network fetch");
+        return;
+    }
+   
     console.log("Fetching weather for:", city); // Log city name
 
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(city)}`)
@@ -403,20 +414,37 @@
   updateDateTime();
 
   function showWeatherFromCache(jsonString) {
+    const errorDiv = document.getElementById('error');
+    const weatherDiv = document.getElementById('weather-info');
+   
     if (!jsonString || jsonString === "null") {
-        // If DB has no data, fallback to API
-        const city = document.getElementById("cityInput").value.trim();
-        showWeather(city);
-        return;
-    }
+      if (errorDiv) {
+          errorDiv.style.display = "none";
+      }
+      // No cached data, fallback to online fetch
+      const city = document.getElementById("cityInput").value.trim();
+      showWeather(city);
+      return;
+  }
 
-    try {
-        const data = JSON.parse(jsonString);
-        document.getElementById("weather-info").innerText =
+  try {
+      const data = JSON.parse(jsonString);
+
+      if (errorDiv) {
+          errorDiv.innerText = "Offline Mode: Showing cached data.";
+          errorDiv.style.display = "block";
+      }
+
+      if (weatherDiv) {
+          weatherDiv.innerText =
             `Cached Weather:\nCity: ${data.city}\nTemperature: ${data.temp}°C\nCondition: ${data.condition}`;
-    } catch (e) {
-        alert("Failed to parse cached weather data.");
-    }
+      }
+  } catch (e) {
+      if (errorDiv) {
+          errorDiv.style.display = "none";
+      }
+      alert("Failed to parse cached weather data.");
+  }
 }
 
 
