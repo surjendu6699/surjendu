@@ -223,21 +223,35 @@ window.addEventListener('offline', () => { window.isOffline = true; });
         alert("No voice input detected.");
     }
   }
-  function searchCity() {
+ function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
       alert("Please enter a city name.");
       return;
     }
-     // Try to get from DB first via Android
-    if (typeof AndroidBridge !== 'undefined') {
-        AndroidBridge.requestCachedWeather(city);
+    console.log("Search Clicked:", city);
+
+    if (typeof AndroidBridge !== 'undefined' && AndroidBridge.requestCachedWeather) {
+        try {
+            AndroidBridge.requestCachedWeather(city);
+            // Fallback if Android does not respond after 2s
+            setTimeout(() => {
+                // If still no data, attempt direct fetch
+                if (!document.getElementById("weather-info").innerText.includes(city)) {
+                    console.log("No cached data received in time, fetching from API...");
+                    showWeather(city);
+                }
+            }, 2000);
+        } catch (error) {
+            console.error("AndroidBridge error, falling back:", error);
+            showWeather(city);
+        }
     } else {
-        // If running outside Android, fallback to API directly
+        // Always allow fallback in browser
         showWeather(city);
     }
-    
-  }
+}
+
 
   function showWeather(city) {
       if (window.isOffline) {
