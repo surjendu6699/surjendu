@@ -127,10 +127,13 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(10px);
     }
-
+    .forecast-day p {
+     margin: 6px 0;
+     font-size: 14px;
+     }
     .forecast-day img {
-      width: 50px;
-      height: 50px;
+      width: 40px;
+      height: 400px;
     }
 
     a {
@@ -280,8 +283,11 @@
 
         const temp = weatherData.main.temp;
         const condition = weatherData.weather[0].description;
+        const humidity = weatherData.main.humidity;
+        const windSpeed = weatherData.wind.speed;
+       
         document.getElementById("weather-info").innerText =
-          `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}`;
+        `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s`;
       })
       .catch(err => {
         console.error("Weather API error", err);
@@ -309,11 +315,17 @@
             const date = new Date(item.dt * 1000).toLocaleDateString();
             const temp = item.main.temp;
             const condition = item.weather[0].description;
+            const humidity = item.main.humidity;
+            const windSpeed = item.wind.speed;
             const icon = item.weather[0].icon;
+            
+           
             return `
               <div class="forecast-day">
                 <p>${date}</p>
                 <p>${temp}°C</p>
+                <p>💧 Humidity: ${humidity}%</p>
+                <p>🌬️ Wind: ${windSpeed} m/s</p>
                 <p>${condition}</p>
                 <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
               </div>
@@ -413,7 +425,11 @@
     try {
         const data = JSON.parse(jsonString);
         document.getElementById("weather-info").innerText =
-            `Cached Weather:\nCity: ${data.city}\nTemperature: ${data.temp}°C\nCondition: ${data.condition}`;
+            `Cached Weather:City: ${data.city}
+              Temperature: ${data.temp}°C
+              Condition: ${data.condition}
+              Humidity: ${data.humidity}%
+              Wind Speed: ${data.windSpeed} m/s`;
     } catch (e) {
         alert("Failed to parse cached weather data.");
     }
