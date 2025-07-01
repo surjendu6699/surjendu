@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farmer Smart Assistant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3f8f3;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 1rem;
+    }
+    .card {
+      background: white;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #4CAF50;
+    }
+    .weather-data span {
+      display: inline-block;
+      margin: 0.5rem 1rem 0.5rem 0;
+    }
+    .alerts {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Farmer Smart Assistant</h1>
+  </header>
+  <div class="container">
+    <div class="card weather-data">
+      <h2>Current Weather</h2>
+      <span>🌡 Temperature: <strong id="temp">-- °C</strong></span>
+      <span>💧 Humidity: <strong id="humidity">-- %</strong></span>
+      <span>🌧 Rainfall: <strong id="rain">-- mm</strong></span>
+      <span>💨 Wind Speed: <strong id="wind">-- km/h</strong></span>
+    </div>
+
+    <div class="card">
+      <h2>Rainfall Alerts</h2>
+      <p class="alerts" id="rainAlert">No rainfall alerts</p>
+    </div>
+
+    <div class="card">
+      <h2>Custom Crop Advice</h2>
+      <p id="cropAdvice">Analyzing data for best crop suggestions...</p>
+    </div>
+
+    <div class="card">
+      <h2>Pest & Disease Risk Notifications</h2>
+      <p id="pestRisk">Analyzing conditions for pest risks...</p>
+    </div>
+
+    <div class="card">
+      <h2>Planning Assistance</h2>
+      <ul id="planningHelp">
+        <li>Checking soil moisture for watering recommendations...</li>
+        <li>Monitoring for ideal pesticide application times...</li>
+        <li>Harvest prediction based on current weather...</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Simulated data (replace with live API later)
+    const weather = {
+      temp: 32,
+      humidity: 70,
+      rain: 5,
+      wind: 15
+    };
+
+    document.getElementById('temp').innerText = weather.temp + " °C";
+    document.getElementById('humidity').innerText = weather.humidity + " %";
+    document.getElementById('rain').innerText = weather.rain + " mm";
+    document.getElementById('wind').innerText = weather.wind + " km/h";
+
+    // Rainfall alert logic
+    if (weather.rain > 10) {
+      document.getElementById('rainAlert').innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
+    }
+
+    // Custom crop advice logic
+    let cropAdvice = "Ideal for rice and maize. Ensure adequate irrigation.";
+    if (weather.temp > 35 && weather.humidity < 40) {
+      cropAdvice = "Too dry for rice. Consider drought-resistant crops like millets.";
+    }
+    document.getElementById('cropAdvice').innerText = cropAdvice;
+
+    // Pest & disease risk
+    let pestRisk = "Low pest risk currently.";
+    if (weather.humidity > 80 && weather.temp > 28) {
+      pestRisk = "⚠ High risk of fungal infections. Monitor crops closely.";
+    }
+    document.getElementById('pestRisk').innerText = pestRisk;
+
+    // Planning help
+    const planningHelp = document.getElementById('planningHelp');
+    planningHelp.innerHTML = `
+      <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
+      <li>🧪 Best time to spray pesticides: Evening, wind is moderate.</li>
+      <li>🌾 Harvesting advisable in 3-5 days if rain forecast remains stable.</li>
+    `;
+  </script>
+</body>
+</html>
