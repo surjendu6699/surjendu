@@ -193,7 +193,8 @@
  <div id="map"></div>
  
   <div id="forecast" class="forecast"></div>
- 
+ <button id="agricultureBtn" class="agri-button">🌿Go to Agriculture Assistant</button>
+
 
 </div>
  
@@ -438,7 +439,9 @@
     }
 }
 
-
+ document.getElementById('agricultureBtn').addEventListener('click', () => {
+    window.location.href = 'agriculture.html';
+  });
 
 
 </script>
