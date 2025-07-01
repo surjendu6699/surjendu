@@ -292,9 +292,7 @@
        
         document.getElementById("weather-info").innerText =
         `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s`;
-
-     
-      })
+        })
       .catch(err => {
         console.error("Weather API error", err);
         alert("Failed to fetch weather info.");
@@ -442,7 +440,7 @@
 }
 
  document.getElementById('agricultureBtn').addEventListener('click', () => {
-    window.location.href = './agricultur.html';
+    window.location.href = 'agricultur.html';
   });
 
 
