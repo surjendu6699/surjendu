@@ -202,13 +202,26 @@
   <div id="weather-info">Weather info will appear here...</div>
   <div id="map"></div>
   <div id="forecast" class="forecast"></div>
+ 
+ <div id="advisory"
+     style="
+        background: rgba(255,255,255,0.15);
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        font-size: 16px;
+        text-align: center;
+        white-space: pre-line;
+        display: none;
+     ">
+  <h3 style="text-align: center; margin-bottom: 10px;">Agriculture Advisory</h3>
+  <p id="advisory-text" style="white-space: pre-line; font-size: 16px; text-align: center;"></p>
+</div>
 
 </div>
  
- <div id="advisory" class="container" style="display: none;">
-  <h3 style="text-align: center; margin-bottom: 10px;">Agriculture Advisory</h3>
-  <p id="advisory-text" style="white-space: pre-line; font-size: 16px; text-align: center;"></p>
- </div>
+
 
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
