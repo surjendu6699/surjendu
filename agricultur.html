@@ -81,45 +81,55 @@
   </div>
 
   <script>
-    // Simulated data (replace with live API later)
-    const weather = {
+    // ✅ Try to get weather data from localStorage
+  const storedData = localStorage.getItem("weatherData");
+  let weather;
+
+  if (storedData) {
+    weather = JSON.parse(storedData);
+  } else {
+    // Fallback default data if nothing stored
+    weather = {
       temp: 32,
       humidity: 70,
       rain: 5,
-      wind: 15
+      windSpeed: 15,
+      city: "Unknown"
     };
+  }
 
-    document.getElementById('temp').innerText = weather.temp + " °C";
-    document.getElementById('humidity').innerText = weather.humidity + " %";
-    document.getElementById('rain').innerText = weather.rain + " mm";
-    document.getElementById('wind').innerText = weather.wind + " km/h";
+  // ✅ Update DOM
+  document.getElementById('temp').innerText = weather.temp + " °C";
+  document.getElementById('humidity').innerText = weather.humidity + " %";
+  document.getElementById('rain').innerText = "-- mm"; // You can set actual value if available
+  document.getElementById('wind').innerText = weather.windSpeed + " m/s";
 
-    // Rainfall alert logic
-    if (weather.rain > 10) {
-      document.getElementById('rainAlert').innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
-    }
+  //  Rainfall alert logic
+  if (weather.rain > 10) {
+    document.getElementById('rainAlert').innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
+  }
 
-    // Custom crop advice logic
-    let cropAdvice = "Ideal for rice and maize. Ensure adequate irrigation.";
-    if (weather.temp > 35 && weather.humidity < 40) {
-      cropAdvice = "Too dry for rice. Consider drought-resistant crops like millets.";
-    }
-    document.getElementById('cropAdvice').innerText = cropAdvice;
+  //  Custom crop advice logic
+  let cropAdvice = "Ideal for rice and maize. Ensure adequate irrigation.";
+  if (weather.temp > 35 && weather.humidity < 40) {
+    cropAdvice = "Too dry for rice. Consider drought-resistant crops like millets.";
+  }
+  document.getElementById('cropAdvice').innerText = cropAdvice;
 
-    // Pest & disease risk
-    let pestRisk = "Low pest risk currently.";
-    if (weather.humidity > 80 && weather.temp > 28) {
-      pestRisk = "⚠ High risk of fungal infections. Monitor crops closely.";
-    }
-    document.getElementById('pestRisk').innerText = pestRisk;
+  //  Pest & disease risk
+  let pestRisk = "Low pest risk currently.";
+  if (weather.humidity > 80 && weather.temp > 28) {
+    pestRisk = "⚠ High risk of fungal infections. Monitor crops closely.";
+  }
+  document.getElementById('pestRisk').innerText = pestRisk;
 
-    // Planning help
-    const planningHelp = document.getElementById('planningHelp');
-    planningHelp.innerHTML = `
-      <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
-      <li>🧪 Best time to spray pesticides: Evening, wind is moderate.</li>
-      <li>🌾 Harvesting advisable in 3-5 days if rain forecast remains stable.</li>
-    `;
+  //  Planning help
+  const planningHelp = document.getElementById('planningHelp');
+  planningHelp.innerHTML = `
+    <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
+    <li>🧪 Best time to spray pesticides: Evening, wind is moderate.</li>
+    <li>🌾 Harvesting advisable in 3-5 days if rain forecast remains stable.</li>
+  `;
   </script>
 </body>
 </html>
