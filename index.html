@@ -204,6 +204,12 @@
   <div id="forecast" class="forecast"></div>
 
 </div>
+ 
+ <div id="advisory" class="container" style="display: none;">
+  <h3 style="text-align: center; margin-bottom: 10px;">Agriculture Advisory</h3>
+  <p id="advisory-text" style="white-space: pre-line; font-size: 16px; text-align: center;"></p>
+ </div>
+
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -443,6 +449,13 @@
     }
 }
 
+function showAdvisory(message) {
+  const div = document.getElementById("advisory");
+  const p = document.getElementById("advisory-text");
+
+  p.innerText = message;
+  div.style.display = "block";
+}
 
 </script>
 
