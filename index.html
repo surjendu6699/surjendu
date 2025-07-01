@@ -293,15 +293,7 @@
         document.getElementById("weather-info").innerText =
         `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s`;
 
-       //  Save weather data
-        const weatherData = {
-        city: cityName,
-         temp: temp,
-         condition: condition,
-         humidity: humidity,
-        windSpeed: windSpeed
-        };
-       localStorage.setItem("weatherData", JSON.stringify(weatherData));
+     
       })
       .catch(err => {
         console.error("Weather API error", err);
