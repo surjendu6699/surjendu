@@ -292,10 +292,16 @@
         const rain =weatherData.rain?.["1h"] || weatherData.rain?.["3h"] || 0;
         //const rain =15;
        
-        document.getElementById("weather-info").innerText =
-        `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nRainfall: ${rain} mm\nWind Speed: ${windSpeed} m/s`;
-         const weather = { temp, humidity, windSpeed, rain, condition, city: cityName };
-         localStorage.setItem("weatherData", JSON.stringify(weather));
+      document.getElementById("weather-info").innerText =
+  `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nRainfall: ${rain} mm\nWind Speed: ${windSpeed} m/s`;
+
+ 
+   const weather = { temp, humidity, windSpeed, rain, condition, city: cityName };
+   localStorage.setItem("weatherData", JSON.stringify(weather));
+     //  Always remove stale weather before saving
+       localStorage.removeItem("weatherData");
+       localStorage.setItem("weatherData", JSON.stringify(weather));
+        console.log(" Updated localStorage weatherData:", weather);
       })
       .catch(err => {
         console.error("Weather API error", err);
