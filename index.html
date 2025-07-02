@@ -440,7 +440,30 @@
 }
 
 document.getElementById('agricultureBtn').addEventListener('click', () => {
-    window.location.href = 'agricultur.html';
+      const city = document.getElementById("cityInput").value.trim();
+    if (!city) {
+        alert("Please enter a city or detect location before going to Agriculture Assistant.");
+        return;
+    }
+
+    //  Optional: Save weather data to localStorage for agricultur.html to read
+    const weatherText = document.getElementById("weather-info").innerText;
+    const tempMatch = weatherText.match(/Temperature:\s?([\d.]+)°C/);
+    const humidityMatch = weatherText.match(/Humidity:\s?([\d.]+)%/);
+    const windMatch = weatherText.match(/Wind Speed:\s?([\d.]+)\s?m\/s/);
+
+    if (tempMatch && humidityMatch && windMatch) {
+        const weatherData = {
+            temp: parseFloat(tempMatch[1]),
+            humidity: parseFloat(humidityMatch[1]),
+            windSpeed: parseFloat(windMatch[1]),
+            city
+        };
+        localStorage.setItem("weatherData", JSON.stringify(weatherData));
+    }
+
+    // Pass city to agricultur.html via URL
+    window.location.href = 'agricultur.html?city=' + encodeURIComponent(city);
 });
 
 
