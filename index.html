@@ -485,7 +485,7 @@ document.getElementById('agricultureBtn').addEventListener('click', () => {
         };
         localStorage.setItem("weatherData", JSON.stringify(weatherData));
     }
-      localStorage.removeItem("weatherData");
+      //localStorage.removeItem("weatherData");
       showWeather(city);
 
      window.history.pushState({}, '', window.location.href); // Push current state
