@@ -294,7 +294,9 @@
        
         document.getElementById("weather-info").innerText =
         `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nRainfall: ${rain} mm\nWind Speed: ${windSpeed} m/s`;
-        })
+         const weather = { temp, humidity, windSpeed, rain, condition, city: cityName };
+         localStorage.setItem("weatherData", JSON.stringify(weather));
+      })
       .catch(err => {
         console.error("Weather API error", err);
         alert("Failed to fetch weather info.");
