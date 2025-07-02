@@ -458,7 +458,7 @@ document.getElementById('agricultureBtn').addEventListener('click', () => {
         alert("Please enter a city or detect location before going to Agriculture Assistant.");
         return;
     }
-
+    suppressForecastAlert = true;  
     //  Optional: Save weather data to localStorage for agricultur.html to read
     const weatherText = document.getElementById("weather-info").innerText;
     const tempMatch = weatherText.match(/Temperature:\s?([\d.]+)°C/);
