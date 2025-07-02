@@ -66,6 +66,10 @@
       <h2>Custom Crop Advice</h2>
       <p id="cropAdvice">Analyzing data for best crop suggestions...</p>
     </div>
+    <div class="card">
+    <h2>Soil Suggestion</h2>
+    <p id="soilSuggestion">Analyzing region and climate for soil advice...</p>
+    </div>
 
     <div class="card">
       <h2>Pest & Disease Risk Notifications</h2>
@@ -159,6 +163,24 @@ if (cropAdvice === "") {
 
 document.getElementById('cropAdvice').innerText = cropAdvice;
 
+
+const soilEl = document.getElementById("soilSuggestion");
+let soilText = "";
+    
+
+// Basic soil suggestions based on rainfall + humidity + city
+if (weather.rain >= 10 && weather.humidity >= 70) {
+  soilText = "🌾 Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
+} else if (weather.rain < 5 && weather.humidity < 50) {
+  soilText = "🌵 Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
+} else if (weather.humidity > 80 && weather.temp < 25) {
+  soilText = "🌱 Clayey soil likely, good for wheat, jute, and legumes.";
+} else {
+  soilText = "🧪 Soil type varies in this region. Please consult with your local agriculture department for exact type.";
+}
+
+// Display soil the suggestion
+soilEl.innerText = soilText;
 
 
     
