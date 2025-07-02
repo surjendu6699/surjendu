@@ -289,6 +289,8 @@
         const condition = weatherData.weather[0].description;
         const humidity = weatherData.main.humidity;
         const windSpeed = weatherData.wind.speed;
+        const rain = weatherData.rain?.["1h"] || weatherData.rain?.["3h"] || 0;
+
        
         document.getElementById("weather-info").innerText =
         `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nWind Speed: ${windSpeed} m/s`;
