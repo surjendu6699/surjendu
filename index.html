@@ -209,7 +209,8 @@
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
   let marker;
-
+ let suppressForecastAlert = false;
+ 
   function startVoice() {
     if (typeof AndroidVoice !== 'undefined') {
       AndroidVoice.startListening();
@@ -267,7 +268,9 @@
       })
       .catch(err => {
         console.error("Location fetch error", err);
-        alert("Error fetching location.");
+         if (!suppressForecastAlert) {
+       alert("Failed to fetch forecast data.");
+         }
       });
   }
 
@@ -355,7 +358,9 @@
     })
     .catch(err => {
       console.error("Forecast API error", err);
-      alert("Failed to fetch forecast data.");
+       if (!suppressForecastAlert) {
+         alert("Failed to fetch forecast data.");
+           }
     });
 }
 
