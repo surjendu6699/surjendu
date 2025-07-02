@@ -149,6 +149,9 @@ if (weather.temp >= 15 && weather.temp <= 25 && weather.humidity > 60 && weather
 if (weather.temp > 35 && weather.humidity < 40) {
   cropAdvice += " Too dry for rice. Prefer drought-resistant crops like Millets, Pulses.\n";
 }
+if (weather.temp >= 18 && weather.temp <= 26 && weather.rain < 5 && weather.humidity < 50) {
+  cropAdvice += "• Suitable for: Barley, Chickpeas\n";
+}
 
 if (cropAdvice === "") {
   cropAdvice = " No optimal crops found for current conditions. Please consult a local agricultural expert.";
