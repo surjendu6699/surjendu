@@ -460,12 +460,15 @@ document.getElementById('agricultureBtn').addEventListener('click', () => {
     const windMatch = weatherText.match(/Wind Speed:\s?([\d.]+)\s?m\/s/);
 
     if (tempMatch && humidityMatch && windMatch) {
-        const weatherData = {
-            temp: parseFloat(tempMatch[1]),
-            humidity: parseFloat(humidityMatch[1]),
-            rain: rainMatch ? parseFloat(rainMatch[1]) : 0,
-            windSpeed: parseFloat(windMatch[1]),
-            city
+          const conditionMatch = weatherText.match(/Condition:\s?(.+)/);
+
+          const weatherData = {
+                     temp: parseFloat(tempMatch[1]),
+                     humidity: parseFloat(humidityMatch[1]),
+                     windSpeed: parseFloat(windMatch[1]),
+                     rain: rainMatch ? parseFloat(rainMatch[1]) : 0,
+                    condition: conditionMatch ? conditionMatch[1].trim() : "Unknown",
+                    city
         };
         localStorage.setItem("weatherData", JSON.stringify(weatherData));
     }
