@@ -128,82 +128,71 @@
       rainAlertEl.style.color = "green";
     }
 
-    // Crop advice
+    // Soil suggestion logic
+    const soilEl = document.getElementById("soilSuggestion");
+    let soilType = "unknown";
+    let soilText = "";
+
+    if (weather.rain >= 10 && weather.humidity >= 70) {
+      soilType = "loamy";
+      soilText = "🌾 Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
+    } else if (weather.rain < 5 && weather.humidity < 50) {
+      soilType = "sandy";
+      soilText = "🌵 Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
+    } else if (weather.humidity > 80 && weather.temp < 25) {
+      soilType = "clayey";
+      soilText = "🌱 Clayey soil likely, good for wheat, jute, and legumes.";
+    } else {
+      soilType = "mixed";
+      soilText = "🧪 Soil type varies in this region. Please consult with your local agriculture department for exact type.";
+    }
+    soilEl.innerHTML = soilText;
+
+    // Pest and disease risk logic
+    let pestSeverity = "low";
+    let pestRisk = "✅ No major pest or disease threats detected based on current weather.";
+
+    if (weather.temp >= 30 && weather.humidity >= 80 && weather.rain > 20) {
+      pestSeverity = "very high";
+      pestRisk = "🚨 Very high fungal risk: Watch for blast, sheath blight, and bacterial wilt. Use fungicides proactively.";
+    } else if (weather.temp >= 28 && weather.humidity >= 75 && weather.rain > 10) {
+      pestSeverity = "high";
+      pestRisk = "⚠ High risk of leaf spot, downy mildew, and pests like stem borers. Monitor crop health closely.";
+    } else if (weather.temp >= 25 && weather.humidity >= 60 && weather.rain > 5) {
+      pestSeverity = "moderate";
+      pestRisk = "⚠ Moderate fungal & bacterial risk. Maintain drainage and remove infected plant parts.";
+    } else if (weather.temp >= 22 && weather.humidity >= 60 && weather.windSpeed > 6) {
+      pestSeverity = "moderate";
+      pestRisk = "⚠ Wind may spread airborne pests and spores. Apply protective sprays during low wind hours.";
+    } else if (weather.temp >= 26 && weather.humidity < 50 && weather.rain === 0) {
+      pestSeverity = "low";
+      pestRisk = "🔍 Dry & warm — watch for mites, aphids, and whiteflies. Use neem oil or organic pesticides.";
+    }
+
+    document.getElementById('pestRisk').innerText = pestRisk;
+
+    // Crop suggestion based on all factors
     let cropAdvice = "";
 
-    if (weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10 && weather.humidity >= 50) {
-      cropAdvice += "Suitable for: Rice, Sugarcane, Maize.\n";
+    if (soilType === "loamy" && pestSeverity !== "very high" && weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10) {
+      cropAdvice += "✅ Best suited: Rice, Sugarcane, Maize<br>";
     }
-
-    if (weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10 && weather.humidity < 60) {
-      cropAdvice += "Suitable for: Wheat, Cotton, Soybean.\n";
+    if (soilType === "sandy" && pestSeverity !== "high" && weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10) {
+      cropAdvice += "✅ Suggested: Cotton, Millets, Pulses<br>";
     }
-
-    if (weather.temp >= 15 && weather.temp <= 25 && weather.humidity > 60 && weather.condition.includes("rain")) {
-      cropAdvice += "Suitable for: Groundnut, Jute, Banana.\n";
+    if (soilType === "clayey" && pestSeverity === "moderate" && weather.temp >= 18 && weather.temp <= 26 && weather.humidity > 70) {
+      cropAdvice += "✅ Suitable for: Wheat, Jute, Legumes<br>";
     }
-
-    if (weather.temp > 35 && weather.humidity < 40) {
-      cropAdvice += "Too dry for rice. Prefer drought-resistant crops like Millets, Pulses.\n";
-    }
-
-    if (weather.temp >= 18 && weather.temp <= 26 && weather.rain < 5 && weather.humidity < 50) {
-      cropAdvice += "Suitable for: Barley, Chickpeas\n";
+    if (soilType === "mixed" && weather.temp > 35 && weather.humidity < 40) {
+      cropAdvice += "⚠ Prefer drought-resistant crops like: Pearl Millet, Sorghum<br>";
     }
 
     if (cropAdvice === "") {
       cropAdvice = "No optimal crops found for current conditions. Please consult a local agricultural expert.";
     }
 
-    document.getElementById('cropAdvice').innerHTML = cropAdvice.replace(/\n/g, "<br>");
+    document.getElementById('cropAdvice').innerHTML = cropAdvice;
 
-    // Soil suggestion
-    const soilEl = document.getElementById("soilSuggestion");
-    let soilText = "";
-
-    if (weather.rain >= 10 && weather.humidity >= 70) {
-      soilText = "🌾 Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
-    } else if (weather.rain < 5 && weather.humidity < 50) {
-      soilText = "🌵 Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
-    } else if (weather.humidity > 80 && weather.temp < 25) {
-      soilText = "🌱 Clayey soil likely, good for wheat, jute, and legumes.";
-    } else {
-      soilText = "🧪 Soil type varies in this region. Please consult with your local agriculture department for exact type.";
-    }
-
-    soilEl.innerHTML = soilText;
-
-    // Pest and diseas risk
-  let pestRisk = "";
-
-if (weather.temp >= 30 && weather.humidity >= 80 && weather.rain > 20) {
-  pestRisk = "🚨 Very high fungal risk: Watch for blast, sheath blight, and bacterial wilt. Use fungicides proactively.";
-}
-else if (weather.temp >= 28 && weather.humidity >= 75 && weather.rain > 10 && weather.rain <= 20) {
-  pestRisk = "⚠ High risk of leaf spot, downy mildew, and pests like stem borers. Monitor crop health closely.";
-}
-else if (weather.temp >= 25 && weather.humidity >= 60 && weather.rain > 5 && weather.rain <= 10) {
-  pestRisk = "⚠ Moderate fungal & bacterial risk. Maintain drainage and remove infected plant parts.";
-}
-else if (weather.temp >= 22 && weather.humidity >= 60 && weather.windSpeed > 6) {
-  pestRisk = "⚠ Wind may spread airborne pests and spores. Apply protective sprays during low wind hours.";
-}
-else if (weather.temp >= 26 && weather.humidity < 50 && weather.rain === 0) {
-  pestRisk = "🔍 Dry & warm — watch for mites, aphids, and whiteflies. Use neem oil or organic pesticides.";
-}
-else if (weather.temp <= 18 && weather.humidity > 70 && weather.rain > 10) {
-  pestRisk = "🌫 Cold & damp — risk of damping off and fungal root rot in seedlings.";
-}
-else if (weather.temp > 35 && weather.humidity < 40 && weather.rain === 0) {
-  pestRisk = "🌞 Very dry & hot — low pest risk, but crop stress may attract sucking pests.";
-}
-else {
-  pestRisk = "✅ No major pest or disease threats detected based on current weather.";
-}
-
-document.getElementById('pestRisk').innerText = pestRisk;
-
-    // Planning help
     const planningHelp = document.getElementById('planningHelp');
     planningHelp.innerHTML = `
       <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
