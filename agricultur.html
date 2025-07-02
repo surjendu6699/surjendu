@@ -83,36 +83,36 @@
   </div>
 
   <script>
-    // Extract city from URL
-  const urlParams = new URLSearchParams(window.location.search);
+ const urlParams = new URLSearchParams(window.location.search);
   const city = urlParams.get("city") || "Unknown";
 
-  document.title = `Farmer Smart Assistant - ${city}`;
-  document.querySelector('h1').innerText = `Farmer Smart Assistant - ${city}`;
-
-  // Try to get weather data from localStorage
+  // Try to get weather from localStorage
+  let weather = null;
   const storedData = localStorage.getItem("weatherData");
-  let weather;
 
-  if (storedData) {
-    weather = JSON.parse(storedData);
-  } else {
-    // Fallback default data if nothing stored
+  try {
+    weather = storedData ? JSON.parse(storedData) : null;
+  } catch (e) {
+    console.error("Failed to parse weatherData from localStorage");
+  }
+
+  // If missing or corrupted, use defaults
+  if (!weather || !weather.temp) {
     weather = {
       temp: 32,
       humidity: 70,
       rain: 15,
       windSpeed: 15,
-      city: "Unknown"
+      city,
+      condition: "clear sky"
     };
-    localStorage.setItem("weatherData", JSON.stringify(weather));
   }
 
-  // Update DOM
-  document.getElementById('temp').innerText = weather.temp + " °C";
-  document.getElementById('humidity').innerText = weather.humidity + " %";
-  document.getElementById('rain').innerText = weather.rain + " mm";// You can set actual value if available
-  document.getElementById('wind').innerText = weather.windSpeed + " m/s";
+  // Now populate the values
+  document.getElementById('temp').innerText = weather.temp + "°C";
+  document.getElementById('humidity').innerText = weather.humidity + "%";
+  document.getElementById('rain').innerText = weather.rain + " mm";
+  document.getElementById('wind').innerText = (weather.windSpeed * 3.6).toFixed(1) + " km/h"; // convert m/s to km/h
 
 // Enhanced Rainfall Alert Logic
 const rainAlertEl = document.getElementById('rainAlert');
