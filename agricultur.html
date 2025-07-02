@@ -38,9 +38,9 @@
       margin: 0.5rem 1rem 0.5rem 0;
     }
     .alerts {
-       font-size: 1rem;
-        font-weight: 500;
-        transition: color 0.3s ease-in-out;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: color 0.3s ease-in-out;
     }
   </style>
 </head>
@@ -66,9 +66,10 @@
       <h2>Custom Crop Advice</h2>
       <p id="cropAdvice">Analyzing data for best crop suggestions...</p>
     </div>
+
     <div class="card">
-    <h2>Soil Suggestion</h2>
-    <p id="soilSuggestion">Analyzing region and climate for soil advice...</p>
+      <h2>Soil Suggestion</h2>
+      <p id="soilSuggestion">Analyzing region and climate for soil advice...</p>
     </div>
 
     <div class="card">
@@ -87,122 +88,110 @@
   </div>
 
   <script>
- const urlParams = new URLSearchParams(window.location.search);
-  const city = urlParams.get("city") || "Unknown";
+    const urlParams = new URLSearchParams(window.location.search);
+    const city = urlParams.get("city") || "Unknown";
 
-  // Try to get weather from localStorage
-  let weather = null;
-  const storedData = localStorage.getItem("weatherData");
+    let weather = null;
+    const storedData = localStorage.getItem("weatherData");
 
-  try {
-    weather = storedData ? JSON.parse(storedData) : null;
-  } catch (e) {
-    console.error("Failed to parse weatherData from localStorage");
-  }
+    try {
+      weather = storedData ? JSON.parse(storedData) : null;
+    } catch (e) {
+      console.error("Failed to parse weatherData from localStorage");
+    }
 
-  // If missing or corrupted, use defaults
-  if (!weather || !weather.temp) {
-    weather = {
-      temp: 32,
-      humidity: 70,
-      rain: 15,
-      windSpeed: 15,
-      city,
-      condition: "clear sky"
-    };
-  }
+    if (!weather || !weather.temp) {
+      weather = {
+        temp: 32,
+        humidity: 70,
+        rain: 15,
+        windSpeed: 15,
+        city,
+        condition: "clear sky"
+      };
+    }
 
-  // Now populate the values
-  document.getElementById('temp').innerText = weather.temp + "°C";
-  document.getElementById('humidity').innerText = weather.humidity + "%";
-  document.getElementById('rain').innerText = weather.rain + " mm";
-  document.getElementById('wind').innerText = (weather.windSpeed * 3.6).toFixed(1) + " km/h"; // convert m/s to km/h
+    document.getElementById('temp').innerText = weather.temp + "°C";
+    document.getElementById('humidity').innerText = weather.humidity + "%";
+    document.getElementById('rain').innerText = weather.rain + " mm";
+    document.getElementById('wind').innerText = (weather.windSpeed * 3.6).toFixed(1) + " km/h";
 
-// Enhanced Rainfall Alert Logic
-const rainAlertEl = document.getElementById('rainAlert');
+    const rainAlertEl = document.getElementById('rainAlert');
+    if (weather.rain > 10) {
+      rainAlertEl.innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
+      rainAlertEl.style.color = "red";
+    } else if (weather.rain > 3) {
+      rainAlertEl.innerText = "☂ Light rain possible. Monitor field moisture.";
+      rainAlertEl.style.color = "orange";
+    } else {
+      rainAlertEl.innerText = "No rainfall alerts";
+      rainAlertEl.style.color = "green";
+    }
 
-if (weather.rain > 10) {
-  rainAlertEl.innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
-  rainAlertEl.style.color = "red";
-} else if (weather.rain > 3) {
-  rainAlertEl.innerText = "☂ Light rain possible. Monitor field moisture.";
-  rainAlertEl.style.color = "orange";
-} else {
-  rainAlertEl.innerText = "No rainfall alerts";
-  rainAlertEl.style.color = "green";
-}
+    // Crop advice
+    let cropAdvice = "";
 
+    if (weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10 && weather.humidity >= 50) {
+      cropAdvice += "Suitable for: Rice, Sugarcane, Maize.\n";
+    }
 
-  //  Custom crop advice logic
+    if (weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10 && weather.humidity < 60) {
+      cropAdvice += "Suitable for: Wheat, Cotton, Soybean.\n";
+    }
 
-  
-let cropAdvice = "";
+    if (weather.temp >= 15 && weather.temp <= 25 && weather.humidity > 60 && weather.condition.includes("rain")) {
+      cropAdvice += "Suitable for: Groundnut, Jute, Banana.\n";
+    }
 
-if (weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10 && weather.humidity >= 50) {
-  cropAdvice += " Suitable for: Rice, Sugarcane, Maize.\n";
-}
+    if (weather.temp > 35 && weather.humidity < 40) {
+      cropAdvice += "Too dry for rice. Prefer drought-resistant crops like Millets, Pulses.\n";
+    }
 
-if (weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10 && weather.humidity < 60) {
-  cropAdvice += " Suitable for: Wheat, Cotton, Soybean.\n";
-}
+    if (weather.temp >= 18 && weather.temp <= 26 && weather.rain < 5 && weather.humidity < 50) {
+      cropAdvice += "Suitable for: Barley, Chickpeas\n";
+    }
 
-if (weather.temp >= 15 && weather.temp <= 25 && weather.humidity > 60 && weather.condition.includes("rain")) {
-  cropAdvice += " Suitable for: Groundnut, Jute, Banana.\n";
-}
+    if (cropAdvice === "") {
+      cropAdvice = "No optimal crops found for current conditions. Please consult a local agricultural expert.";
+    }
 
-if (weather.temp > 35 && weather.humidity < 40) {
-  cropAdvice += " Too dry for rice. Prefer drought-resistant crops like Millets, Pulses.\n";
-}
-if (weather.temp >= 18 && weather.temp <= 26 && weather.rain < 5 && weather.humidity < 50) {
-  cropAdvice += "• Suitable for: Barley, Chickpeas\n";
-}
+    document.getElementById('cropAdvice').innerHTML = cropAdvice.replace(/\n/g, "<br>");
 
-if (cropAdvice === "") {
-  cropAdvice = " No optimal crops found for current conditions. Please consult a local agricultural expert.";
-}
+    // Soil suggestion
+    const soilEl = document.getElementById("soilSuggestion");
+    let soilText = "";
 
-document.getElementById('cropAdvice').innerText = cropAdvice;
+    if (weather.rain >= 10 && weather.humidity >= 70) {
+      soilText = "🌾 Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
+    } else if (weather.rain < 5 && weather.humidity < 50) {
+      soilText = "🌵 Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
+    } else if (weather.humidity > 80 && weather.temp < 25) {
+      soilText = "🌱 Clayey soil likely, good for wheat, jute, and legumes.";
+    } else {
+      soilText = "🧪 Soil type varies in this region. Please consult with your local agriculture department for exact type.";
+    }
 
+    soilEl.innerHTML = soilText;
 
-const soilEl = document.getElementById("soilSuggestion");
-let soilText = "";
-    
+    // Pest risk
+    let pestRisk = "Low pest risk currently.";
+    if (weather.humidity > 80 && weather.temp > 28) {
+      pestRisk = "⚠ High risk of fungal infections. Monitor crops closely.";
+    }
+    document.getElementById('pestRisk').innerText = pestRisk;
 
-// Basic soil suggestions based on rainfall + humidity + city
-if (weather.rain >= 10 && weather.humidity >= 70) {
-  soilText = "🌾 Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
-} else if (weather.rain < 5 && weather.humidity < 50) {
-  soilText = "🌵 Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
-} else if (weather.humidity > 80 && weather.temp < 25) {
-  soilText = "🌱 Clayey soil likely, good for wheat, jute, and legumes.";
-} else {
-  soilText = "🧪 Soil type varies in this region. Please consult with your local agriculture department for exact type.";
-}
-
-// Display soil the suggestion
-soilEl.innerText = soilText;
-
-
-    
-  //  Pest & disease risk
-  let pestRisk = "Low pest risk currently.";
-  if (weather.humidity > 80 && weather.temp > 28) {
-    pestRisk = "⚠ High risk of fungal infections. Monitor crops closely.";
-  }
-  document.getElementById('pestRisk').innerText = pestRisk;
-
-  //  Planning help
-  const planningHelp = document.getElementById('planningHelp');
-  planningHelp.innerHTML = `
-    <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
-    <li>🧪 Best time to spray pesticides: Evening, wind is moderate.</li>
-    <li>🌾 Harvesting advisable in 3-5 days if rain forecast remains stable.</li>
-  `;
+    // Planning help
+    const planningHelp = document.getElementById('planningHelp');
+    planningHelp.innerHTML = `
+      <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
+      <li>🧪 Best time to spray pesticides: Evening, wind is moderate.</li>
+      <li>🌾 Harvesting advisable in 3-5 days if rain forecast remains stable.</li>
+    `;
   </script>
-  
+
   <div style="text-align: center; margin-top: 30px;">
-  <button onclick="window.location.href='index.html'" style="padding: 10px 20px; font-size: 16px; background: #4CAF50; color: white; border: none; border-radius: 8px;">⬅ Back to Weather Assistant</button>
-</div>
+    <button onclick="window.location.href='index.html'" style="padding: 10px 20px; font-size: 16px; background: #4CAF50; color: white; border: none; border-radius: 8px;">⬅ Back to Weather Assistant</button>
+  </div>
 
 </body>
 </html>
