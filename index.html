@@ -435,6 +435,7 @@
               Temperature: ${data.temp}°C
               Condition: ${data.condition}
               Humidity: ${data.humidity}%
+              Rainfall: ${data.rain} mm
               Wind Speed: ${data.windSpeed} m/s`;
     } catch (e) {
         alert("Failed to parse cached weather data.");
@@ -452,12 +453,15 @@ document.getElementById('agricultureBtn').addEventListener('click', () => {
     const weatherText = document.getElementById("weather-info").innerText;
     const tempMatch = weatherText.match(/Temperature:\s?([\d.]+)°C/);
     const humidityMatch = weatherText.match(/Humidity:\s?([\d.]+)%/);
+    const rainMatch = weatherText.match(/Rainfall:\s?([\d.]+)\s?mm/);
+
     const windMatch = weatherText.match(/Wind Speed:\s?([\d.]+)\s?m\/s/);
 
     if (tempMatch && humidityMatch && windMatch) {
         const weatherData = {
             temp: parseFloat(tempMatch[1]),
             humidity: parseFloat(humidityMatch[1]),
+            rain: rainMatch ? parseFloat(rainMatch[1]) : 0,
             windSpeed: parseFloat(windMatch[1]),
             city
         };
