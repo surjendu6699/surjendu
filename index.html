@@ -271,91 +271,93 @@
       });
   }
 
-  function showWeatherByCoords(lat, lon, cityName = "Your Location") {
-    map.setView([lat, lon], 10);
-    if (marker) {
-      marker.setLatLng([lat, lon]);
-    } else {
-      marker = L.marker([lat, lon]).addTo(map);
-    }
-
-    // Current weather
-    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(weatherData => {
-        console.log("API Response:", weatherData); // Log API response
-
-        const temp = weatherData.main.temp;
-        const condition = weatherData.weather[0].description;
-        const humidity = weatherData.main.humidity;
-        const windSpeed = weatherData.wind.speed;
-        const rain =weatherData.rain?.["1h"] || weatherData.rain?.["3h"] || 0;
-        //const rain =15;
-       
-      document.getElementById("weather-info").innerText =
-  `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nRainfall: ${rain} mm\nWind Speed: ${windSpeed} m/s`;
-
- 
-   const weather = { temp, humidity, windSpeed, rain, condition, city: cityName };
-      //localStorage.setItem("weatherData", JSON.stringify(weather));
-     //  Always remove stale weather before saving
-       localStorage.removeItem("weatherData");
-       localStorage.setItem("weatherData", JSON.stringify(weather));
-        console.log(" Updated localStorage weatherData:", weather);
-      })
-      .catch(err => {
-        console.error("Weather API error", err);
-        alert("Failed to fetch weather info.");
-      });
-
-    // Forecast
-    fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
-      .then(response => response.json())
-      .then(forecastData => {
-        console.log("Forecast API Response:", forecastData); // Log forecast API response
-
-        const forecastMap = new Map();
-        forecastData.list.forEach(item => {
-          const date = item.dt_txt.split(' ')[0];
-          if (!forecastMap.has(date)) {
-            forecastMap.set(date, item);
-          }
-        });
-
-        const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
-
-        if (dailyForecast.length > 0) {
-          const forecastHTML = dailyForecast.map(item => {
-            const date = new Date(item.dt * 1000).toLocaleDateString();
-            const temp = item.main.temp;
-            const condition = item.weather[0].description;
-            const humidity = item.main.humidity;
-            const windSpeed = item.wind.speed;
-            const icon = item.weather[0].icon;
-            
-           
-            return `
-              <div class="forecast-day">
-                <p>${date}</p>
-                <p>${temp}°C</p>
-                <p>💧 Humidity: ${humidity}%</p>
-                <p>🌬️ Wind: ${windSpeed} m/s</p>
-                <p>${condition}</p>
-                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
-              </div>
-            `;
-          }).join('');
-
-          document.getElementById("forecast").innerHTML = forecastHTML;
-        } else {
-          document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
-        }
-      })
-      .catch(err => {
-        console.error("Forecast API error", err);
-        alert("Failed to fetch forecast data.");
-      });
+ function showWeatherByCoords(lat, lon, cityName = "Your Location") {
+  map.setView([lat, lon], 10);
+  if (marker) {
+    marker.setLatLng([lat, lon]);
+  } else {
+    marker = L.marker([lat, lon]).addTo(map);
   }
+
+  // Declare variables to use later in both fetches
+  let temp, humidity, windSpeed, rain, condition;
+
+  // Current weather
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+    .then(response => response.json())
+    .then(weatherData => {
+      console.log("API Response:", weatherData);
+
+      temp = weatherData.main.temp;
+      condition = weatherData.weather[0].description;
+      humidity = weatherData.main.humidity;
+      windSpeed = weatherData.wind.speed;
+      rain = weatherData.rain?.["1h"] || weatherData.rain?.["3h"] || 0;
+
+      document.getElementById("weather-info").innerText =
+        `Weather in ${cityName}:\nTemperature: ${temp}°C\nCondition: ${condition}\nHumidity: ${humidity}%\nRainfall: ${rain} mm\nWind Speed: ${windSpeed} m/s`;
+    })
+    .catch(err => {
+      console.error("Weather API error", err);
+      alert("Failed to fetch weather info.");
+    });
+
+  document.getElementById("forecast").innerHTML = "";
+
+  // Forecast
+  fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=3c4c0fc184b9bcda272f8bb75917219b`)
+    .then(response => response.json())
+    .then(forecastData => {
+      console.log("Forecast API Response:", forecastData);
+
+      const forecastMap = new Map();
+      forecastData.list.forEach(item => {
+        const date = item.dt_txt.split(' ')[0];
+        if (!forecastMap.has(date)) {
+          forecastMap.set(date, item);
+        }
+      });
+
+      const dailyForecast = Array.from(forecastMap.values()).slice(0, 5);
+
+      if (dailyForecast.length > 0) {
+        const forecastHTML = dailyForecast.map(item => {
+          const date = new Date(item.dt * 1000).toLocaleDateString();
+          const temp = item.main.temp;
+          const condition = item.weather[0].description;
+          const humidity = item.main.humidity;
+          const windSpeed = item.wind.speed;
+          const icon = item.weather[0].icon;
+
+          return `
+            <div class="forecast-day">
+              <p>${date}</p>
+              <p>${temp}°C</p>
+              <p>💧 Humidity: ${humidity}%</p>
+              <p>🌬️ Wind: ${windSpeed} m/s</p>
+              <p>${condition}</p>
+              <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="weather icon" />
+            </div>
+          `;
+        }).join('');
+
+        document.getElementById("forecast").innerHTML = forecastHTML;
+
+        //  Save to localStorage only after both APIs succeeded
+        const weather = { temp, humidity, windSpeed, rain, condition, city: cityName };
+        localStorage.removeItem("weatherData");
+        localStorage.setItem("weatherData", JSON.stringify(weather));
+        console.log("Saved weatherData to localStorage:", weather);
+
+      } else {
+        document.getElementById("forecast").innerHTML = "<p>No forecast data available.</p>";
+      }
+    })
+    .catch(err => {
+      console.error("Forecast API error", err);
+      alert("Failed to fetch forecast data.");
+    });
+}
 
   function detectLocation() {
     if (location.protocol !== "https:" && location.hostname !== "localhost") {
