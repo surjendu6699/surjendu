@@ -81,7 +81,14 @@
   </div>
 
   <script>
-    // ✅ Try to get weather data from localStorage
+    // Extract city from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const city = urlParams.get("city") || "Unknown";
+
+  document.title = `Farmer Smart Assistant - ${city}`;
+  document.querySelector('h1').innerText = `Farmer Smart Assistant - ${city}`;
+
+  // Try to get weather data from localStorage
   const storedData = localStorage.getItem("weatherData");
   let weather;
 
@@ -98,7 +105,7 @@
     };
   }
 
-  // ✅ Update DOM
+  // Update DOM
   document.getElementById('temp').innerText = weather.temp + " °C";
   document.getElementById('humidity').innerText = weather.humidity + " %";
   document.getElementById('rain').innerText = "-- mm"; // You can set actual value if available
