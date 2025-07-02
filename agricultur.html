@@ -130,12 +130,35 @@ if (weather.rain > 10) {
 
 
   //  Custom crop advice logic
-  let cropAdvice = "Ideal for rice and maize. Ensure adequate irrigation.";
-  if (weather.temp > 35 && weather.humidity < 40) {
-    cropAdvice = "Too dry for rice. Consider drought-resistant crops like millets.";
-  }
-  document.getElementById('cropAdvice').innerText = cropAdvice;
 
+  
+let cropAdvice = "";
+
+if (weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10 && weather.humidity >= 50) {
+  cropAdvice += " Suitable for: Rice, Sugarcane, Maize.\n";
+}
+
+if (weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10 && weather.humidity < 60) {
+  cropAdvice += " Suitable for: Wheat, Cotton, Soybean.\n";
+}
+
+if (weather.temp >= 15 && weather.temp <= 25 && weather.humidity > 60 && weather.condition.includes("rain")) {
+  cropAdvice += " Suitable for: Groundnut, Jute, Banana.\n";
+}
+
+if (weather.temp > 35 && weather.humidity < 40) {
+  cropAdvice += " Too dry for rice. Prefer drought-resistant crops like Millets, Pulses.\n";
+}
+
+if (cropAdvice === "") {
+  cropAdvice = " No optimal crops found for current conditions. Please consult a local agricultural expert.";
+}
+
+document.getElementById('cropAdvice').innerText = cropAdvice;
+
+
+
+    
   //  Pest & disease risk
   let pestRisk = "Low pest risk currently.";
   if (weather.humidity > 80 && weather.temp > 28) {
