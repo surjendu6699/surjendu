@@ -173,12 +173,35 @@
 
     soilEl.innerHTML = soilText;
 
-    // Pest risk
-    let pestRisk = "Low pest risk currently.";
-    if (weather.humidity > 80 && weather.temp > 28) {
-      pestRisk = "⚠ High risk of fungal infections. Monitor crops closely.";
-    }
-    document.getElementById('pestRisk').innerText = pestRisk;
+    // Pest and diseas risk
+  let pestRisk = "";
+
+if (weather.temp >= 30 && weather.humidity >= 80 && weather.rain > 20) {
+  pestRisk = "🚨 Very high fungal risk: Watch for blast, sheath blight, and bacterial wilt. Use fungicides proactively.";
+}
+else if (weather.temp >= 28 && weather.humidity >= 75 && weather.rain > 10 && weather.rain <= 20) {
+  pestRisk = "⚠ High risk of leaf spot, downy mildew, and pests like stem borers. Monitor crop health closely.";
+}
+else if (weather.temp >= 25 && weather.humidity >= 60 && weather.rain > 5 && weather.rain <= 10) {
+  pestRisk = "⚠ Moderate fungal & bacterial risk. Maintain drainage and remove infected plant parts.";
+}
+else if (weather.temp >= 22 && weather.humidity >= 60 && weather.windSpeed > 6) {
+  pestRisk = "⚠ Wind may spread airborne pests and spores. Apply protective sprays during low wind hours.";
+}
+else if (weather.temp >= 26 && weather.humidity < 50 && weather.rain === 0) {
+  pestRisk = "🔍 Dry & warm — watch for mites, aphids, and whiteflies. Use neem oil or organic pesticides.";
+}
+else if (weather.temp <= 18 && weather.humidity > 70 && weather.rain > 10) {
+  pestRisk = "🌫 Cold & damp — risk of damping off and fungal root rot in seedlings.";
+}
+else if (weather.temp > 35 && weather.humidity < 40 && weather.rain === 0) {
+  pestRisk = "🌞 Very dry & hot — low pest risk, but crop stress may attract sucking pests.";
+}
+else {
+  pestRisk = "✅ No major pest or disease threats detected based on current weather.";
+}
+
+document.getElementById('pestRisk').innerText = pestRisk;
 
     // Planning help
     const planningHelp = document.getElementById('planningHelp');
