@@ -135,26 +135,26 @@
 
     if (weather.rain >= 10 && weather.humidity >= 70) {
       soilType = "loamy";
-      soilText = "🌾 Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
+      soilText = " Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
     } else if (weather.rain < 5 && weather.humidity < 50) {
       soilType = "sandy";
-      soilText = "🌵 Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
+      soilText = " Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
     } else if (weather.humidity > 80 && weather.temp < 25) {
       soilType = "clayey";
-      soilText = "🌱 Clayey soil likely, good for wheat, jute, and legumes.";
+      soilText = " Clayey soil likely, good for wheat, jute, and legumes.";
     } else {
       soilType = "mixed";
-      soilText = "🧪 Soil type varies in this region. Please consult with your local agriculture department for exact type.";
+      soilText = "Soil type varies in this region. Please consult with your local agriculture department for exact type.";
     }
     soilEl.innerHTML = soilText;
 
     // Pest and disease risk logic
     let pestSeverity = "low";
-    let pestRisk = "✅ No major pest or disease threats detected based on current weather.";
+    let pestRisk = " No major pest or disease threats detected based on current weather.";
 
     if (weather.temp >= 30 && weather.humidity >= 80 && weather.rain > 20) {
       pestSeverity = "very high";
-      pestRisk = "🚨 Very high fungal risk: Watch for blast, sheath blight, and bacterial wilt. Use fungicides proactively.";
+      pestRisk = " Very high fungal risk: Watch for blast, sheath blight, and bacterial wilt. Use fungicides proactively.";
     } else if (weather.temp >= 28 && weather.humidity >= 75 && weather.rain > 10) {
       pestSeverity = "high";
       pestRisk = "⚠ High risk of leaf spot, downy mildew, and pests like stem borers. Monitor crop health closely.";
@@ -166,7 +166,7 @@
       pestRisk = "⚠ Wind may spread airborne pests and spores. Apply protective sprays during low wind hours.";
     } else if (weather.temp >= 26 && weather.humidity < 50 && weather.rain === 0) {
       pestSeverity = "low";
-      pestRisk = "🔍 Dry & warm — watch for mites, aphids, and whiteflies. Use neem oil or organic pesticides.";
+      pestRisk = " Dry & warm — watch for mites, aphids, and whiteflies. Use neem oil or organic pesticides.";
     }
 
     document.getElementById('pestRisk').innerText = pestRisk;
@@ -175,16 +175,16 @@
     let cropAdvice = "";
 
     if (soilType === "loamy" && pestSeverity !== "very high" && weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10) {
-      cropAdvice += "✅ Best suited: Rice, Sugarcane, Maize<br>";
+      cropAdvice += " Best suited: Rice, Sugarcane, Maize<br>";
     }
     if (soilType === "sandy" && pestSeverity !== "high" && weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10) {
-      cropAdvice += "✅ Suggested: Cotton, Millets, Pulses<br>";
+      cropAdvice += " Suggested: Cotton, Millets, Pulses<br>";
     }
     if (soilType === "clayey" && pestSeverity === "moderate" && weather.temp >= 18 && weather.temp <= 26 && weather.humidity > 70) {
-      cropAdvice += "✅ Suitable for: Wheat, Jute, Legumes<br>";
+      cropAdvice += " Suitable for: Wheat, Jute, Legumes<br>";
     }
     if (soilType === "mixed" && weather.temp > 35 && weather.humidity < 40) {
-      cropAdvice += "⚠ Prefer drought-resistant crops like: Pearl Millet, Sorghum<br>";
+      cropAdvice += " Prefer drought-resistant crops like: Pearl Millet, Sorghum<br>";
     }
 
     if (cropAdvice === "") {
@@ -192,13 +192,39 @@
     }
 
     document.getElementById('cropAdvice').innerHTML = cropAdvice;
+    
+    
+    //planing assistant
 
-    const planningHelp = document.getElementById('planningHelp');
-    planningHelp.innerHTML = `
-      <li>💧 Recommended to water crops in early morning due to moderate temp.</li>
-      <li>🧪 Best time to spray pesticides: Evening, wind is moderate.</li>
-      <li>🌾 Harvesting advisable in 3-5 days if rain forecast remains stable.</li>
-    `;
+   const planningHelp = document.getElementById('planningHelp');
+
+let wateringTip = " Water crops early morning to reduce evaporation.";
+if (weather.temp > 35 || (soilType === "sandy" && weather.rain < 3)) {
+  wateringTip = "Frequent watering needed due to high heat and fast-draining soil.";
+} else if (weather.rain > 10) {
+  wateringTip = " No watering needed today. Rainfall is sufficient.";
+}
+
+let pesticideTip = " Spray pesticides in the evening when wind is low.";
+if (weather.windSpeed > 7) {
+  pesticideTip = " Avoid spraying now. High wind may cause drift.";
+} else if (pestSeverity === "high" || pestSeverity === "very high") {
+  pesticideTip = " Apply fungicides/pesticides ASAP. Evening preferred.";
+}
+
+let harvestTip = " Monitor crop maturity for harvest in next few days.";
+if (weather.rain > 15) {
+  harvestTip = " Delay harvest due to heavy rain. Prevent crop spoilage.";
+} else if (weather.temp < 20 && soilType === "clayey") {
+  harvestTip = " Harvest early to avoid waterlogging risks in clayey soil.";
+}
+
+planningHelp.innerHTML = `
+  <li>${wateringTip}</li>
+  <li>${pesticideTip}</li>
+  <li>${harvestTip}</li>
+`;
+
   </script>
 
   <div style="text-align: center; margin-top: 30px;">
