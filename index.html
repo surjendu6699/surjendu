@@ -297,7 +297,7 @@
 
  
    const weather = { temp, humidity, windSpeed, rain, condition, city: cityName };
-   localStorage.setItem("weatherData", JSON.stringify(weather));
+      //localStorage.setItem("weatherData", JSON.stringify(weather));
      //  Always remove stale weather before saving
        localStorage.removeItem("weatherData");
        localStorage.setItem("weatherData", JSON.stringify(weather));
