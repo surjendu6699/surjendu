@@ -38,7 +38,9 @@
       margin: 0.5rem 1rem 0.5rem 0;
     }
     .alerts {
-      color: red;
+       font-size: 1rem;
+        font-weight: 500;
+        transition: color 0.3s ease-in-out;
     }
   </style>
 </head>
@@ -111,10 +113,20 @@
   document.getElementById('rain').innerText = weather.rain + " mm";// You can set actual value if available
   document.getElementById('wind').innerText = weather.windSpeed + " m/s";
 
-  //  Rainfall alert logic
-  if (weather.rain > 10) {
-    document.getElementById('rainAlert').innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
-  }
+ Enhanced Rainfall Alert Logic
+const rainAlertEl = document.getElementById('rainAlert');
+
+if (weather.rain > 10) {
+  rainAlertEl.innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
+  rainAlertEl.style.color = "red";
+} else if (weather.rain > 3) {
+  rainAlertEl.innerText = "☂ Light rain possible. Monitor field moisture.";
+  rainAlertEl.style.color = "orange";
+} else {
+  rainAlertEl.innerText = "No rainfall alerts";
+  rainAlertEl.style.color = "green";
+}
+
 
   //  Custom crop advice logic
   let cropAdvice = "Ideal for rice and maize. Ensure adequate irrigation.";
