@@ -472,6 +472,8 @@ document.getElementById('agricultureBtn').addEventListener('click', () => {
         };
         localStorage.setItem("weatherData", JSON.stringify(weatherData));
     }
+ 
+     window.history.pushState({}, '', window.location.href); // Push current state
 
     // Pass city to agricultur.html via URL
     window.location.href = 'agricultur.html?city=' + encodeURIComponent(city);
