@@ -381,8 +381,15 @@
             .then(response => response.json())
             .then(data => {
               const city = data.address.city || data.address.town || data.address.village || "Your Location";
-              document.getElementById("cityInput").value = city;
-              showWeatherByCoords(lat, lon, city);
+             document.getElementById("cityInput").value = city;
+
+           //  Call Java to use consistent logic (multi-API + DB)
+            if (typeof AndroidVoice !== 'undefined' && AndroidVoice.startAutoWeather) {
+                       AndroidVoice.startAutoWeather(city);
+             } else {
+                 showWeatherByCoords(lat, lon, city);
+                }
+
             })
             .catch(() => {
               showWeatherByCoords(lat, lon, "Your Location");
