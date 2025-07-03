@@ -218,14 +218,18 @@
       alert("Voice recognition only works in supported Android apps.");
     }
   }
-   function onVoiceResult(city) {
-    if (city) {
-        document.getElementById("cityInput").value = city;
-        showWeather(city);
+ function onVoiceResult(city) {
+  if (city) {
+    document.getElementById("cityInput").value = city;
+    if (typeof AndroidVoice !== 'undefined' && AndroidVoice.startAutoWeather) {
+      AndroidVoice.startAutoWeather(city); //  Use Android logic
     } else {
-        alert("No voice input detected.");
+      showWeather(city); //  fallback only outside Android
     }
   }
+}
+
+ 
   function searchCity() {
     const city = document.getElementById("cityInput").value.trim();
     if (!city) {
@@ -442,11 +446,16 @@
   setInterval(updateDateTime, 1000);
   updateDateTime();
 
-  function showWeatherFromCache(jsonString) {
+function showWeatherFromCache(jsonString) {
     if (!jsonString || jsonString === "null") {
         // If DB has no data, fallback to API
         const city = document.getElementById("cityInput").value.trim();
-        showWeather(city);
+
+        if (typeof AndroidVoice !== 'undefined' && AndroidVoice.startAutoWeather) {
+            AndroidVoice.startAutoWeather(city); //  Use Android-native logic
+        } else {
+            showWeather(city); // Fallback to browser-based fetch
+        }
         return;
     }
 
