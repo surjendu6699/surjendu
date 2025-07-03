@@ -494,6 +494,10 @@ document.getElementById('agricultureBtn').addEventListener('click', () => {
      window.location.href = `agricultur.html?city=${encodeURIComponent(city)}&fromApp=true`;
 });
 
+// Called by Android when it sends cached weather from local DB
+function onWeatherFetched(message) {
+  document.getElementById("weather-info").innerText = message;
+}
 
 </script>
 
