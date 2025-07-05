@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Assistant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #ffffff);
+      color: #333;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00695c;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    label, select, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    select, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #result {
+      margin-top: 20px;
+      background: #f1f8e9;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Crop Assistant</h1>
+  <div class="container">
+    <label for="cropSelect"><strong>Select a Crop:</strong></label>
+    <select id="cropSelect" onchange="analyzeCrop()">
+      <option value="">-- Choose a crop --</option>
+      <option value="Wheat">Wheat</option>
+      <option value="Rice">Rice</option>
+      <option value="Maize">Maize</option>
+      <option value="Sugarcane">Sugarcane</option>
+      <option value="Cotton">Cotton</option>
+      <option value="Soybean">Soybean</option>
+      <option value="Millet">Millet</option>
+      <option value="Barley">Barley</option>
+      <option value="Groundnut">Groundnut</option>
+      <option value="Mustard">Mustard</option>
+      <option value="Sunflower">Sunflower</option>
+      <option value="Chickpea">Chickpea</option>
+      <option value="Lentil">Lentil</option>
+    </select>
+
+    <div id="result">Select a crop to see its ideal growing conditions.</div>
+  </div>
+
+  <script>
+    const cropData = {
+      wheat: {
+        temp: "10-25°C",
+        rain: "20-25 mm/week",
+        wind: "Low wind ideal",
+        soil: "Loamy or clayey",
+        water: "Moderate",
+        risks: "Rust, smut, aphids"
+      },
+      rice: {
+        temp: "20-35°C",
+        rain: "100-200 mm/month",
+        wind: "Tolerates moderate",
+        soil: "Clayey or loamy",
+        water: "High (requires flooding)",
+        risks: "Blast, bacterial blight, stem borers"
+      },
+      maize: {
+        temp: "18-27°C",
+        rain: "50-75 mm/week",
+        wind: "Avoid high wind",
+        soil: "Well-drained loamy",
+        water: "Moderate",
+        risks: "Downy mildew, armyworms, cutworms"
+      },
+      sugarcane: {
+        temp: "20-38°C",
+        rain: "100-150 mm/month",
+        wind: "Shelter from storms",
+        soil: "Deep fertile loam",
+        water: "High",
+        risks: "Borers, red rot, top shoot borer"
+      },
+      cotton: {
+        temp: "21-30°C",
+        rain: "50-100 mm/month",
+        wind: "Low wind",
+        soil: "Black or alluvial",
+        water: "Moderate",
+        risks: "Bollworm, whitefly, fungal wilt"
+      },
+      soybean: {
+        temp: "20-30°C",
+        rain: "60-100 mm/month",
+        wind: "Sheltered fields",
+        soil: "Well-drained sandy loam",
+        water: "Moderate",
+        risks: "Rust, root rot, leaf spot"
+      },
+      millet: {
+        temp: "25-35°C",
+        rain: "40-60 mm/week",
+        wind: "Wind tolerant",
+        soil: "Sandy or loamy",
+        water: "Low",
+        risks: "Downy mildew, smut, grasshoppers"
+      },
+      barley: {
+        temp: "12-25°C",
+        rain: "20-50 mm/week",
+        wind: "Low wind",
+        soil: "Loamy to sandy loam",
+        water: "Moderate",
+        risks: "Rust, scald, aphids"
+      },
+      groundnut: {
+        temp: "25-35°C",
+        rain: "50-75 mm/week",
+        wind: "Avoid heavy wind",
+        soil: "Light sandy loam",
+        water: "Moderate",
+        risks: "Leaf spot, rust, white grub"
+      },
+      mustard: {
+        temp: "10-25°C",
+        rain: "20-30 mm/week",
+        wind: "Low wind",
+        soil: "Loamy, well-drained",
+        water: "Low to moderate",
+        risks: "Aphids, powdery mildew, blight"
+      },
+      sunflower: {
+        temp: "20-30°C",
+        rain: "50-75 mm/month",
+        wind: "Requires calm conditions",
+        soil: "Loamy to clay loam",
+        water: "Moderate",
+        risks: "Rust, stem rot, beetles"
+      },
+      chickpea: {
+        temp: "10-25°C",
+        rain: "20-40 mm/week",
+        wind: "Sheltered is better",
+        soil: "Loamy or sandy loam",
+        water: "Low",
+        risks: "Wilt, root rot, pod borer"
+      },
+      lentil: {
+        temp: "10-25°C",
+        rain: "20-40 mm/week",
+        wind: "Moderate wind okay",
+        soil: "Loamy and fertile",
+        water: "Low",
+        risks: "Wilt, blight, aphids"
+      }
+    };
+
+    function analyzeCrop() {
+      const crop = document.getElementById("cropSelect").value.toLowerCase();
+      const weather = JSON.parse(localStorage.getItem("weatherData") || '{}');
+      const info = cropData[crop];
+
+      if (!info) {
+        document.getElementById("result").innerText = "Please select a valid crop from the list.";
+        return;
+      }
+
+      let resultText = `Ideal Conditions for ${crop.charAt(0).toUpperCase() + crop.slice(1)}:\n`;
+      resultText += ` Temperature: ${info.temp}\n`;
+      resultText += ` Rainfall: ${info.rain}\n`;
+      resultText += ` Wind: ${info.wind}\n`;
+      resultText += ` Soil: ${info.soil}\n`;
+      resultText += ` Water Intake: ${info.water}\n`;
+      resultText += ` Risks/Diseases: ${info.risks}`;
+
+      if (weather.temp && weather.rain !== undefined && weather.windSpeed !== undefined) {
+        resultText += `\n\n Current Weather in ${weather.city || 'your area'}:\n`;
+        resultText += ` Temperature: ${weather.temp}°C\n`;
+        resultText += ` Rainfall: ${weather.rain} mm\n`;
+        resultText += ` Wind Speed: ${weather.windSpeed} m/s\n`;
+        resultText += ` Condition: ${weather.condition}`;
+      }
+
+      document.getElementById("result").innerText = resultText;
+    }
+  </script>
+</body>
+</html>
