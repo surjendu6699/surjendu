@@ -54,7 +54,7 @@
       <span>🌡 Temperature: <strong id="temp">-- °C</strong></span>
       <span>💧 Humidity: <strong id="humidity">-- %</strong></span>
       <span>🌧 Rainfall: <strong id="rain">-- mm</strong></span>
-      <span>💨 Wind Speed: <strong id="wind">-- km/h</strong></span>
+      <span>🌪 Wind Speed: <strong id="wind">-- km/h</strong></span>
     </div>
 
     <div class="card">
@@ -104,8 +104,8 @@
       weather = {
         temp: 32,
         humidity: 70,
-        rain: 15,
-        windSpeed: 15,
+        rain: 1.5,
+        windSpeed: 2.5,
         city,
         condition: "clear sky"
       };
@@ -117,12 +117,12 @@
     document.getElementById('wind').innerText = (weather.windSpeed * 3.6).toFixed(1) + " km/h";
 
     const rainAlertEl = document.getElementById('rainAlert');
-    if (weather.rain > 10) {
-      rainAlertEl.innerText = "⚠ Heavy rainfall expected. Avoid pesticide spraying.";
-      rainAlertEl.style.color = "red";
-    } else if (weather.rain > 3) {
-      rainAlertEl.innerText = "☂ Light rain possible. Monitor field moisture.";
+    if (weather.rain >= 5) {
+      rainAlertEl.innerText = "⚠ Moderate rainfall expected. Avoid pesticide spraying.";
       rainAlertEl.style.color = "orange";
+    } else if (weather.rain >= 1) {
+      rainAlertEl.innerText = "☒ Light rain expected. Adjust watering schedule.";
+      rainAlertEl.style.color = "blue";
     } else {
       rainAlertEl.innerText = "No rainfall alerts";
       rainAlertEl.style.color = "green";
@@ -133,98 +133,87 @@
     let soilType = "unknown";
     let soilText = "";
 
-    if (weather.rain >= 10 && weather.humidity >= 70) {
+    if (weather.rain >= 2 && weather.humidity >= 60) {
       soilType = "loamy";
-      soilText = " Loamy soil is suitable for crops in this region. It retains moisture well for crops like rice and sugarcane.";
-    } else if (weather.rain < 5 && weather.humidity < 50) {
+      soilText = "Loamy soil is likely. Suitable for rice, maize, sugarcane.";
+    } else if (weather.rain < 1 && weather.humidity < 55) {
       soilType = "sandy";
-      soilText = " Sandy or red soil is common in drier climates. Suitable for cotton, millets, and pulses.";
-    } else if (weather.humidity > 80 && weather.temp < 25) {
+      soilText = "Sandy soil common in dry areas. Good for cotton, millet, pulses.";
+    } else if (weather.humidity >= 80 && weather.temp < 27) {
       soilType = "clayey";
-      soilText = " Clayey soil likely, good for wheat, jute, and legumes.";
+      soilText = "Clayey soil possible. Suitable for wheat, jute, legumes.";
     } else {
       soilType = "mixed";
-      soilText = "Soil type varies in this region. Please consult with your local agriculture department for exact type.";
+      soilText = "Mixed soil conditions. Consider drought-tolerant crops.";
     }
     soilEl.innerHTML = soilText;
 
     // Pest and disease risk logic
     let pestSeverity = "low";
-    let pestRisk = " No major pest or disease threats detected based on current weather.";
+    let pestRisk = "No major pest or disease threats detected.";
 
-    if (weather.temp >= 30 && weather.humidity >= 80 && weather.rain > 20) {
-      pestSeverity = "very high";
-      pestRisk = " Very high fungal risk: Watch for blast, sheath blight, and bacterial wilt. Use fungicides proactively.";
-    } else if (weather.temp >= 28 && weather.humidity >= 75 && weather.rain > 10) {
+    if (weather.temp >= 30 && weather.humidity >= 75 && weather.rain >= 2) {
       pestSeverity = "high";
-      pestRisk = "⚠ High risk of leaf spot, downy mildew, and pests like stem borers. Monitor crop health closely.";
-    } else if (weather.temp >= 25 && weather.humidity >= 60 && weather.rain > 5) {
+      pestRisk = "High fungal risk. Watch for mildew and blight.";
+    } else if (weather.temp >= 28 && weather.humidity >= 65 && weather.rain >= 1) {
       pestSeverity = "moderate";
-      pestRisk = "⚠ Moderate fungal & bacterial risk. Maintain drainage and remove infected plant parts.";
-    } else if (weather.temp >= 22 && weather.humidity >= 60 && weather.windSpeed > 6) {
-      pestSeverity = "moderate";
-      pestRisk = "⚠ Wind may spread airborne pests and spores. Apply protective sprays during low wind hours.";
-    } else if (weather.temp >= 26 && weather.humidity < 50 && weather.rain === 0) {
+      pestRisk = "Moderate pest risk. Monitor leaves and apply treatments if needed.";
+    } else if (weather.temp > 30 && weather.humidity < 60 && weather.rain === 0) {
       pestSeverity = "low";
-      pestRisk = " Dry & warm — watch for mites, aphids, and whiteflies. Use neem oil or organic pesticides.";
+      pestRisk = "Dry weather pests (mites, aphids) may occur.";
     }
 
     document.getElementById('pestRisk').innerText = pestRisk;
 
-    // Crop suggestion based on all factors
+    // Crop suggestion
     let cropAdvice = "";
 
-    if (soilType === "loamy" && pestSeverity !== "very high" && weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 10) {
-      cropAdvice += " Best suited: Rice, Sugarcane, Maize<br>";
+    if (soilType === "loamy" && weather.temp >= 25 && weather.temp <= 35 && weather.rain >= 2) {
+      cropAdvice += "Best suited: Rice, Sugarcane, Maize<br>";
     }
-    if (soilType === "sandy" && pestSeverity !== "high" && weather.temp >= 20 && weather.temp <= 30 && weather.rain < 10) {
-      cropAdvice += " Suggested: Cotton, Millets, Pulses<br>";
+    if (soilType === "sandy" && weather.temp >= 22 && weather.temp <= 32 && weather.rain < 2) {
+      cropAdvice += "Suggested: Cotton, Millets, Pulses<br>";
     }
-    if (soilType === "clayey" && pestSeverity === "moderate" && weather.temp >= 18 && weather.temp <= 26 && weather.humidity > 70) {
-      cropAdvice += " Suitable for: Wheat, Jute, Legumes<br>";
+    if (soilType === "clayey" && pestSeverity === "moderate" && weather.temp >= 20 && weather.temp <= 26) {
+      cropAdvice += "Good for: Wheat, Jute, Legumes<br>";
     }
-    if (soilType === "mixed" && weather.temp > 35 && weather.humidity < 40) {
-      cropAdvice += " Prefer drought-resistant crops like: Pearl Millet, Sorghum<br>";
+    if (soilType === "mixed") {
+      cropAdvice += "Try resilient crops: Pearl Millet, Sorghum<br>";
     }
-
     if (cropAdvice === "") {
-      cropAdvice = "No optimal crops found for current conditions. Please consult a local agricultural expert.";
+      cropAdvice = "No strong suggestions. Consult local agri expert.";
+    }
+    document.getElementById('cropAdvice').innerHTML = cropAdvice;
+
+    // Planning Assistance
+    const planningHelp = document.getElementById('planningHelp');
+
+    let wateringTip = "Water early in the morning.";
+    if (weather.rain >= 2) {
+      wateringTip = "Rainfall detected — skip watering today.";
+    } else if (weather.temp > 33 && soilType === "sandy") {
+      wateringTip = "Frequent watering needed — dry, fast-draining soil.";
     }
 
-    document.getElementById('cropAdvice').innerHTML = cropAdvice;
-    
-    
-    //planing assistant
+    let pesticideTip = "Spray pesticides in the evening.";
+    if (weather.windSpeed > 7) {
+      pesticideTip = "Too windy for spraying — wait for calmer weather.";
+    } else if (pestSeverity === "high") {
+      pesticideTip = "Apply pesticides ASAP — high pest risk.";
+    }
 
-   const planningHelp = document.getElementById('planningHelp');
+    let harvestTip = "Monitor crop readiness for harvest.";
+    if (weather.rain >= 3) {
+      harvestTip = "Heavy rain — delay harvest to avoid spoilage.";
+    } else if (soilType === "clayey" && weather.temp < 20) {
+      harvestTip = "Consider early harvest to avoid waterlogging.";
+    }
 
-let wateringTip = " Water crops early morning to reduce evaporation.";
-if (weather.temp > 35 || (soilType === "sandy" && weather.rain < 3)) {
-  wateringTip = "Frequent watering needed due to high heat and fast-draining soil.";
-} else if (weather.rain > 10) {
-  wateringTip = " No watering needed today. Rainfall is sufficient.";
-}
-
-let pesticideTip = " Spray pesticides in the evening when wind is low.";
-if (weather.windSpeed > 7) {
-  pesticideTip = " Avoid spraying now. High wind may cause drift.";
-} else if (pestSeverity === "high" || pestSeverity === "very high") {
-  pesticideTip = " Apply fungicides/pesticides ASAP. Evening preferred.";
-}
-
-let harvestTip = " Monitor crop maturity for harvest in next few days.";
-if (weather.rain > 15) {
-  harvestTip = " Delay harvest due to heavy rain. Prevent crop spoilage.";
-} else if (weather.temp < 20 && soilType === "clayey") {
-  harvestTip = " Harvest early to avoid waterlogging risks in clayey soil.";
-}
-
-planningHelp.innerHTML = `
-  <li>${wateringTip}</li>
-  <li>${pesticideTip}</li>
-  <li>${harvestTip}</li>
-`;
-
+    planningHelp.innerHTML = `
+      <li>${wateringTip}</li>
+      <li>${pesticideTip}</li>
+      <li>${harvestTip}</li>
+    `;
   </script>
 
   <div style="text-align: center; margin-top: 30px;">
@@ -232,4 +221,4 @@ planningHelp.innerHTML = `
   </div>
 
 </body>
-</html>
+</html> 
