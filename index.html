@@ -458,7 +458,7 @@ function showWeatherFromCache(jsonString) {
         }
         return;
     }
-
+ document.getElementById("loading-message").style.display = "block";
     try {
         const data = JSON.parse(jsonString);
         document.getElementById("weather-info").innerText =
@@ -516,6 +516,16 @@ function onWeatherFetched(message) {
 }
 
 </script>
+
+ <div id="loading-message" style="
+  display: none;
+  text-align: center;
+  margin-top: 10px;
+  font-size: 16px;
+  color: #ffeb3b;
+">
+   Updating from internet...
+</div>
 
 <a href="privacy.html" target="_blank">Privacy Policy</a>
 
